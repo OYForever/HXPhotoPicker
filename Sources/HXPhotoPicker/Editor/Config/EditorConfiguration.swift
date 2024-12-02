@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreMedia
 
 public struct EditorConfiguration: IndicatorTypeConfig, PhotoHUDConfig {
     
@@ -164,6 +165,10 @@ public extension EditorConfiguration {
         /// Autoplay after loading is complete
         /// 加载完成后自动播放
         public var isAutoPlay: Bool = true
+        
+        /// Play from a specified time point
+        /// 从指定时间点播放
+        public var startPlayTime: CMTime = .zero
         
         /// The specified tool is selected by default
         /// 默认选中指定工具

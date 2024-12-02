@@ -195,11 +195,13 @@ class EditorVideoPlayerView: VideoPlayerView {
             ) { [weak self] playerLayer, _ in
                 guard let self = self else { return }
                 if playerLayer.isReadyForDisplay {
-                    self.coverImageView.isHidden = true
                     if self.autoPlay && !self.didEnterBackground {
                         self.play()
                     }
                     self.delegate?.playerView(readyForDisplay: self)
+                    DispatchQueue.main.async {
+                        self.coverImageView.isHidden = true
+                    }
                 }
         }
         loadedTimeRangesObservation = playerItem

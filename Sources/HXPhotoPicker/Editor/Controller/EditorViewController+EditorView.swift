@@ -191,8 +191,9 @@ extension EditorViewController: EditorViewDelegate {
     
     // MARK: Video
     public func editorView(videoReadyForDisplay editorView: EditorView) {
-        if selectedAsset.result == nil, config.video.isAutoPlay, !didEnterPlayGround { 
-            editorView.playVideo()
+        if selectedAsset.result == nil, !didEnterPlayGround {
+            editorView.seekVideo(to: config.video.startPlayTime, isPlay: config.video.isAutoPlay)
+            videoControlView.updateLineViewFrame(at: config.video.startPlayTime)
         }
     }
     /// 视频开始播放

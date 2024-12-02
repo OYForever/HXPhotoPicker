@@ -9,21 +9,26 @@ import UIKit
 import AVFoundation
 
 extension AVAsset {
-    func getImage(at time: TimeInterval, videoComposition: AVVideoComposition? = nil) -> UIImage? {
-        let assetImageGenerator = AVAssetImageGenerator(asset: self)
-        assetImageGenerator.appliesPreferredTrackTransform = true
-        assetImageGenerator.videoComposition = videoComposition
-        assetImageGenerator.apertureMode = .encodedPixels
+    func getImage(at seconds: TimeInterval, isAccurate: Bool = false, videoComposition: AVVideoComposition? = nil) -> UIImage? {
+        let generator = AVAssetImageGenerator(asset: self)
+        
+        // 基本设置
+        generator.appliesPreferredTrackTransform = true
+        generator.videoComposition = videoComposition
+        generator.apertureMode = .encodedPixels
+        
+        // 设置时间精度
+        if isAccurate {
+            generator.requestedTimeToleranceBefore = .zero
+            generator.requestedTimeToleranceAfter = .zero
+        }
+        
+        // 创建时间点
+        let time = CMTime(seconds: seconds, preferredTimescale: duration.timescale)
+        
         do {
-            let thumbnailImageRef = try assetImageGenerator.copyCGImage(
-                at: CMTime(
-                    value: CMTimeValue(time),
-                    timescale: duration.timescale
-                ),
-                actualTime: nil
-            )
-            let image = UIImage.init(cgImage: thumbnailImageRef)
-            return image
+            let cgImage = try generator.copyCGImage(at: time, actualTime: nil)
+            return UIImage(cgImage: cgImage)
         } catch {
             return nil
         }

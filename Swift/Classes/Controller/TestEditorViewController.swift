@@ -159,6 +159,7 @@ class TestEditorViewController: HXBaseViewController {
                 }else {
                     return
                 }
+                editConfig.video.startPlayTime = self.editorView.avPlayer?.currentTime() ?? .zero
                 let vc = EditorViewController(edtiorAsset, config: editConfig) { [weak self] editorAsset, _ in
                     guard let self = self, let result = editorAsset.result else {
                         return

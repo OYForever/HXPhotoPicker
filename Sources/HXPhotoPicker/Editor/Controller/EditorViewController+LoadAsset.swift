@@ -55,7 +55,7 @@ extension EditorViewController {
                 return
             }
             let avAsset = AVAsset(url: url)
-            let image = avAsset.getImage(at: 0.1)
+            let image = avAsset.getImage(at: config.video.startPlayTime.seconds, isAccurate: true)
             editorView.setAVAsset(avAsset, coverImage: image)
             editorView.loadVideo(isPlay: false)
             loadCompletion()
@@ -65,7 +65,7 @@ extension EditorViewController {
                 loadAssetStatus = .succeed(.videoAsset(avAsset))
                 return
             }
-            let image = avAsset.getImage(at: 0.1)
+            let image = avAsset.getImage(at: config.video.startPlayTime.seconds, isAccurate: true)
             editorView.setAVAsset(avAsset, coverImage: image)
             editorView.loadVideo(isPlay: false)
             loadCompletion()
@@ -476,7 +476,7 @@ extension EditorViewController {
                 return
             }
             let avAsset = AVAsset(url: localURL)
-            let image = avAsset.getImage(at: 0.1)
+            let image = avAsset.getImage(at: config.video.startPlayTime.seconds, isAccurate: true)
             editorView.setAVAsset(avAsset, coverImage: image)
             editorView.loadVideo(isPlay: false)
             loadCompletion()
@@ -512,7 +512,7 @@ extension EditorViewController {
                 self.assetLoadingView = nil
                 PhotoManager.HUDView.dismiss(delay: 0, animated: false, for: self.view)
                 let avAsset = AVAsset(url: url)
-                let image = avAsset.getImage(at: 0.1)
+                let image = avAsset.getImage(at: config.video.startPlayTime.seconds, isAccurate: true)
                 self.editorView.setAVAsset(avAsset, coverImage: image)
                 self.editorView.loadVideo(isPlay: false)
                 self.loadCompletion()
@@ -881,7 +881,7 @@ extension EditorViewController {
                 return
             }
             PhotoManager.HUDView.dismiss(delay: 0, animated: false, for: self.view)
-            let image = avAsset.getImage(at: 0.1)
+            let image = avAsset.getImage(at: config.video.startPlayTime.seconds, isAccurate: true)
             self.editorView.setAVAsset(avAsset, coverImage: image)
             self.editorView.loadVideo(isPlay: false)
             self.loadCompletion()
@@ -957,7 +957,7 @@ extension EditorViewController {
             }
         }else if editorView.type == .video {
             if let avAsset = editorView.avAsset {
-                avAsset.getImage(at: 0.1) { [weak self] _, image, _ in
+                avAsset.getImage(at: config.video.startPlayTime.seconds) { [weak self] _, image, _ in
                     guard let self = self,
                           let image = image else {
                         return
