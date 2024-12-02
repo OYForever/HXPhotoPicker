@@ -199,7 +199,7 @@ class EditorVideoPlayerView: VideoPlayerView {
                         self.play()
                     }
                     self.delegate?.playerView(readyForDisplay: self)
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.coverImageView.isHidden = true
                     }
                 }
