@@ -353,7 +353,12 @@ class EditorVideoControlView: UIView {
         var errorIndex: [Int] = []
         imageGenerator?.generateCGImagesAsynchronously(forTimes: times) { (_, cgImage, _, result, _) in
             if result != .cancelled {
-                if let cgImage = cgImage {
+                if let cgImage = cgImage?.cropping(to: CGRect(
+                    x: 2,
+                    y: 2,
+                    width: (cgImage?.width ?? 4) - 4,
+                    height: (cgImage?.height ?? 4) - 4
+                )) {
                     self.videoFrameLock.sync {
                         self.videoFrameMap[index] = cgImage
                     }
