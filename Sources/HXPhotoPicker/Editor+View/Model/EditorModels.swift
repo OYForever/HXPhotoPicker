@@ -106,7 +106,7 @@ public struct EditorVideoFactor {
     public let maskType: EditorView.MaskType?
     /// 导出视频的分辨率
     public let preset: ExportPreset
-    /// 导出视频的质量 [0-10]
+    /// 导出视频的质量 (0-10]
     public let quality: Int
     public init(
         timeRang: CMTimeRange = .zero,

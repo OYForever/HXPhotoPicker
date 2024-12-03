@@ -188,7 +188,7 @@ public class EditorVideoTool {
             if timeRang != .zero {
                 exportSession.timeRange = timeRang
             }
-            if factor.quality > 0 && factor.quality < 10 {
+            if factor.quality > 0 && factor.quality <= 10 {
                 let seconds = timeRang != .zero ? timeRang.duration.seconds : videoTotalSeconds
                 var maxSize: Int?
                 if let urlAsset = avAsset as? AVURLAsset {
