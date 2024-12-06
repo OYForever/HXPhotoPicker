@@ -49,6 +49,8 @@ extension PhotoManager {
                 language = "fr"
             case .arabic:
                 language = "ar"
+            case .portuguese_brazil:
+                language = "pt-BR"
             case .custom(let bundle):
                 language = ""
                 languageBundle = bundle
