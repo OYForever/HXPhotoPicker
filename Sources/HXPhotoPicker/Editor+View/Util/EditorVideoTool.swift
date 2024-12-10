@@ -5,11 +5,10 @@
 //  Created by Slience on 2023/3/15.
 //
 
-import UIKit
 import AVFoundation
+import UIKit
 
 public class EditorVideoTool {
-    
     let avAsset: AVAsset
     let outputURL: URL
     let factor: EditorVideoFactor
@@ -41,7 +40,7 @@ public class EditorVideoTool {
         audioMix = AVMutableAudioMix()
         mixComposition = AVMutableComposition()
     }
-    
+
     public init(
         avAsset: AVAsset,
         outputURL: URL,
@@ -53,15 +52,15 @@ public class EditorVideoTool {
         videoOrientation = avAsset.videoOrientation
         self.outputURL = outputURL
         self.factor = factor
-        self.watermark = .init(layers: [], images: [])
-        self.stickers = []
-        self.cropFactor = .empty
+        watermark = .init(layers: [], images: [])
+        stickers = []
+        cropFactor = .empty
         self.maskType = maskType
         self.filter = filter
         audioMix = AVMutableAudioMix()
         mixComposition = AVMutableComposition()
     }
-    
+
     public func export(
         progressHandler: ((CGFloat) -> Void)? = nil,
         completionHandler: @escaping (Result<URL, EditorError>) -> Void
@@ -106,7 +105,7 @@ public class EditorVideoTool {
             }
         }
     }
-    
+
     public func cancelExport() {
         avAsset.cancelLoading()
         progressTimer?.invalidate()
@@ -114,12 +113,12 @@ public class EditorVideoTool {
         exportSession?.cancelExport()
         exportSession = nil
     }
-    
+
     private var exportSession: AVAssetExportSession?
     private var completionHandler: ((Result<URL, EditorError>) -> Void)?
     private var progressHandler: ((CGFloat) -> Void)?
     private weak var progressTimer: Timer?
-    
+
     private func exprotHandler() {
         do {
             let exportPresets = AVAssetExportSession.exportPresets(compatibleWith: avAsset)
@@ -143,7 +142,7 @@ public class EditorVideoTool {
             let animationBeginTime: CFTimeInterval
             if timeRang == .zero {
                 animationBeginTime = AVCoreAnimationBeginTimeAtZero
-            }else {
+            } else {
                 animationBeginTime = timeRang.start.seconds == 0 ?
                     AVCoreAnimationBeginTimeAtZero :
                     timeRang.start.seconds
@@ -153,7 +152,7 @@ public class EditorVideoTool {
                 beginTime: animationBeginTime,
                 videoDuration: timeRang == .zero ? videoTotalSeconds : timeRang.duration.seconds
             )
-            
+
             var addVideoComposition = false
             if videoComposition.renderSize.width > 0 {
                 addVideoComposition = true
@@ -173,9 +172,9 @@ public class EditorVideoTool {
             exportSession.outputURL = outputURL
             if supportedTypeArray.contains(AVFileType.mp4) {
                 exportSession.outputFileType = .mp4
-            }else if supportedTypeArray.isEmpty {
+            } else if supportedTypeArray.isEmpty {
                 throw EditorError.error(type: .exportFailed, message: "不支持导出该类型视频")
-            }else {
+            } else {
                 exportSession.outputFileType = supportedTypeArray.first
             }
             exportSession.shouldOptimizeForNetworkUse = true
@@ -215,7 +214,7 @@ public class EditorVideoTool {
                             let errorString: String
                             if let error = exportSession.error {
                                 errorString = "导出失败：" + error.localizedDescription
-                            }else {
+                            } else {
                                 errorString = "导出失败，未知原因"
                             }
                             self.completionHandler?(.failure(EditorError.error(
@@ -227,7 +226,7 @@ public class EditorVideoTool {
                     }
                 })
             }
-            
+
             progressTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { [weak self] _ in
                 self?.progressHandler?(CGFloat(exportSession.progress))
             })
@@ -241,7 +240,7 @@ public class EditorVideoTool {
             )
         }
     }
-    
+
     func cropSize() {
         if !cropFactor.isClip {
             return
@@ -250,15 +249,13 @@ public class EditorVideoTool {
         let height = videoComposition.renderSize.height * cropFactor.sizeRatio.y
         videoComposition.renderSize = .init(width: width, height: height)
     }
-    
-    
+
     var mixComposition: AVMutableComposition!
     var videoComposition: AVMutableVideoComposition!
     var audioMix: AVMutableAudioMix!
 }
 
 fileprivate extension EditorVideoTool {
-    
     func insertVideoTrack(
         for videoTrack: AVAssetTrack,
         beginTime: CFTimeInterval,
@@ -288,7 +285,7 @@ fileprivate extension EditorVideoTool {
             beginTime: beginTime,
             videoDuration: videoDuration
         )
-        
+
         var newInstructions: [AVVideoCompositionInstructionProtocol] = []
         for instruction in videoComposition.instructions where instruction is AVVideoCompositionInstruction {
             let videoInstruction = instruction as! AVVideoCompositionInstruction
@@ -324,12 +321,12 @@ fileprivate extension EditorVideoTool {
             )
             newInstructions.append(newInstruction)
         }
-        
+
         videoComposition.instructions = newInstructions
         videoComposition.renderScale = 1
         videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
     }
-    
+
     func addWatermark(
         renderSize: CGSize,
         beginTime: CFTimeInterval,
@@ -373,12 +370,12 @@ fileprivate extension EditorVideoTool {
                 y: size.height / 2
             )
             let mirrorSize = size
-            
+
             let scaleCenter = CGPoint(
                 x: mirrorSize.width / 2,
                 y: mirrorSize.height / 2
             )
-            
+
             let mirrorTransform = CATransform3DMakeScale(info.mirrorScale.x, info.mirrorScale.y, 1)
             let rotateTransform = CATransform3DMakeRotation(info.angel.radians, 0, 0, 1)
             let contentLayer = CALayer()
@@ -407,7 +404,7 @@ fileprivate extension EditorVideoTool {
                 textLayer.position = scaleCenter
                 mirrorLayer.addSublayer(textLayer)
                 textLayer.transform = CATransform3DMakeScale(info.scale, info.scale, 1)
-            }else if let image = info.image {
+            } else if let image = info.image?.withOrientation(.up) {
                 let scaleSize = CGSize(
                     width: mirrorSize.width * info.scale,
                     height: mirrorSize.height * info.scale
@@ -455,13 +452,13 @@ fileprivate extension EditorVideoTool {
             bgLayer.transform = CATransform3DMakeRotation(cropFactor.angle.radians, 0, 0, 1)
             overlaylayer.addSublayer(contentLayer)
             contentLayer.transform = CATransform3DMakeScale(cropFactor.mirrorScale.x, cropFactor.mirrorScale.y, 1)
-        }else {
+        } else {
             bgLayer.frame = bounds
             overlaylayer.addSublayer(bgLayer)
         }
         overlaylayer.isGeometryFlipped = true
         overlaylayer.frame = .init(origin: .zero, size: overlaySize)
-        
+
         let trackID = avAsset.unusedTrackID()
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(
             additionalLayer: overlaylayer,
@@ -469,7 +466,7 @@ fileprivate extension EditorVideoTool {
         )
         return trackID
     }
-    
+
     func insertAudioTrack(
         duration: CMTime,
         timeRang: CMTimeRange,
@@ -490,7 +487,7 @@ fileprivate extension EditorVideoTool {
             let audioTimeRange: CMTimeRange
             if duration.seconds < audioTrack.timeRange.duration.seconds {
                 audioTimeRange = .init(start: .zero, duration: duration)
-            }else {
+            } else {
                 audioTimeRange = audioTrack.timeRange
             }
             try track.insertTimeRange(audioTimeRange, of: audioTrack, at: .zero)
@@ -500,7 +497,7 @@ fileprivate extension EditorVideoTool {
             audioInputParam.trackID = track.trackID
             audioInputParams.append(audioInputParam)
         }
-        
+
         for audio in factor.audios {
             guard let audioTrack = mixComposition.addMutableTrack(
                 withMediaType: .audio,
@@ -518,7 +515,7 @@ fileprivate extension EditorVideoTool {
                 if timeRang == .zero {
                     startTime = 0
                     videoDuration = duration.seconds
-                }else {
+                } else {
                     startTime = timeRang.start.seconds
                     videoDuration = timeRang.duration.seconds
                 }
@@ -532,7 +529,7 @@ fileprivate extension EditorVideoTool {
                         startTime,
                         preferredTimescale: audioAsset.duration.timescale
                     )
-                    for index in 0..<divisor {
+                    for index in 0 ..< divisor {
                         try audioTrack.insertTimeRange(
                             audioTimeRange,
                             of: track,
@@ -560,7 +557,7 @@ fileprivate extension EditorVideoTool {
                             at: atTime
                         )
                     }
-                }else {
+                } else {
                     let audioTimeRange: CMTimeRange
                     let atTime: CMTime
                     if timeRang != .zero {
@@ -569,7 +566,7 @@ fileprivate extension EditorVideoTool {
                             duration: timeRang.duration
                         )
                         atTime = timeRang.start
-                    }else {
+                    } else {
                         audioTimeRange = CMTimeRangeMake(
                             start: .zero,
                             duration: videoTimeRange.duration
@@ -590,7 +587,7 @@ fileprivate extension EditorVideoTool {
         }
         audioMix.inputParameters = audioInputParams
     }
-    
+
     func adjustVideoOrientation() {
         let assetOrientation = videoOrientation
         guard assetOrientation != .landscapeRight else {
@@ -611,7 +608,6 @@ fileprivate extension EditorVideoTool {
 }
 
 fileprivate extension EditorVideoTool {
-    
     func fileLengthLimit(
         seconds: Double,
         maxSize: Int? = nil
@@ -624,16 +620,16 @@ fileprivate extension EditorVideoTool {
             var ratioParam: Double = 0
             if factor.preset == .ratio_640x480 {
                 ratioParam = 0.02
-            }else if factor.preset == .ratio_960x540 {
+            } else if factor.preset == .ratio_960x540 {
                 ratioParam = 0.04
-            }else if factor.preset == .ratio_1280x720 {
+            } else if factor.preset == .ratio_1280x720 {
                 ratioParam = 0.08
             }
             return Int64(seconds * ratioParam * quality * 1000 * 1000)
         }
         return 0
     }
-    
+
     func textAnimationLayer(
         audioContent: EditorStickerAudioContent,
         size: CGSize,
@@ -686,7 +682,7 @@ fileprivate extension EditorVideoTool {
             textLayer.shadowOffset = CGSize(width: 0, height: -1)
             if index > 0 || content.startTime > 0 {
                 textLayer.opacity = 0
-            }else {
+            } else {
                 textLayer.opacity = 1
             }
             bgLayer.addSublayer(textLayer)
@@ -701,15 +697,15 @@ fileprivate extension EditorVideoTool {
                 startAnimation?.duration = 0.01
                 if content.startTime == 0 {
                     startAnimation?.beginTime = beginTime
-                }else {
+                } else {
                     startAnimation?.beginTime = beginTime + content.startTime
                 }
                 startAnimation?.isRemovedOnCompletion = false
                 startAnimation?.fillMode = .forwards
-            }else {
+            } else {
                 startAnimation = nil
             }
-            
+
             if content.endTime + 0.01 > videoDuration {
                 if let start = startAnimation {
                     textLayer.add(start, forKey: nil)
@@ -722,21 +718,21 @@ fileprivate extension EditorVideoTool {
             endAnimation.duration = 0.01
             if content.endTime == 0 {
                 endAnimation.beginTime = AVCoreAnimationBeginTimeAtZero
-            }else {
+            } else {
                 if content.endTime + 0.01 < videoDuration {
                     endAnimation.beginTime = beginTime + content.endTime
-                }else {
+                } else {
                     endAnimation.beginTime = beginTime + videoDuration
                 }
             }
             endAnimation.isRemovedOnCompletion = false
             endAnimation.fillMode = .forwards
-            
+
             if audioContent.time < videoDuration {
                 let group = CAAnimationGroup()
                 if let start = startAnimation {
                     group.animations = [start, endAnimation]
-                }else {
+                } else {
                     group.animations = [endAnimation]
                 }
                 group.beginTime = beginTime
@@ -745,7 +741,7 @@ fileprivate extension EditorVideoTool {
                 group.duration = audioContent.time
                 group.repeatCount = MAXFLOAT
                 textLayer.add(group, forKey: nil)
-            }else {
+            } else {
                 if let start = startAnimation {
                     textLayer.add(start, forKey: nil)
                 }
@@ -754,7 +750,7 @@ fileprivate extension EditorVideoTool {
         }
         return bgLayer
     }
-    
+
     func animationLayer(
         image: UIImage,
         beginTime: CFTimeInterval,
@@ -771,7 +767,7 @@ fileprivate extension EditorVideoTool {
             return animationLayer
         }
         let delayTimes = gifResult.1
-         
+
         var currentTime: Double = 0
         var animations = [CAAnimation]()
         for (index, frame) in frames.enumerated() {
