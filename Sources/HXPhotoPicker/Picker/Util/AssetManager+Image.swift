@@ -74,7 +74,7 @@ public extension AssetManager {
     ) -> PHImageRequestID {
         return PHImageManager.default().requestImage(
             for: asset,
-            targetSize: targetSize,
+            targetSize: CGSize(width: targetSize.width.rounded(.down), height: targetSize.height.rounded(.down)),
             contentMode: .aspectFill,
             options: options,
             resultHandler: resultHandler
