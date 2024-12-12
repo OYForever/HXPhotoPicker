@@ -157,13 +157,13 @@ public class PhotoPickerViewController: PhotoBaseViewController {
             listView.contentInset = UIEdgeInsets(
                 top: collectionTop,
                 left: 0,
-                bottom: bottomInset,
+                bottom: config.customBottomInset ?? bottomInset,
                 right: 0
             )
             listView.scrollIndicatorInsets = UIEdgeInsets(
                 top: 0,
                 left: 0,
-                bottom: bottomIndicatorInset,
+                bottom: config.customBottomInset ?? bottomIndicatorInset,
                 right: 0
             )
         }else {
@@ -175,7 +175,7 @@ public class PhotoPickerViewController: PhotoBaseViewController {
             listView.contentInset = UIEdgeInsets(
                 top: collectionTop,
                 left: 0,
-                bottom: promptHeight,
+                bottom: config.customBottomInset ?? promptHeight,
                 right: 0
             )
         }

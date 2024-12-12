@@ -77,6 +77,10 @@ public struct PhotoListConfiguration {
     /// 每个照片之间的间隙
     public var spacing: CGFloat = 1
     
+    /// Customize bottom padding and slider padding
+    /// 自定义底部内边距，滑动条内边距
+    public var customBottomInset: CGFloat?
+    
     /// Allow Haptic Touch preview, iOS13+
     /// 允许 Haptic Touch 预览，iOS13 以上
     public var allowHapticTouchPreview: Bool = true
