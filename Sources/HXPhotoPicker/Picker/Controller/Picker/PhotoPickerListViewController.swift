@@ -563,7 +563,7 @@ extension PhotoPickerListViewController: UICollectionViewDelegate {
                 }
                 width = max(120, width)
                 height = max(120, height)
-                let vc = PhotoPeekViewController(photoAsset)
+                let vc = PhotoPeekViewController(photoAsset, previewImage: cell.photoView.image)
                 vc.delegate = self
                 vc.preferredContentSize = CGSize(width: width, height: height)
                 return vc
@@ -669,8 +669,23 @@ extension PhotoPickerListViewController: UICollectionViewDelegate {
         guard let indexPath = configuration.identifier as? IndexPath else {
             return
         }
-        animator.addCompletion { [weak self] in
-            self?.didSelectItem(
+        var shouldAnimatedPop = true
+        let asset = getAsset(for: indexPath.item)
+        switch asset.mediaType {
+        case .photo:
+            shouldAnimatedPop = pickerConfig.photoSelectionTapAction != .quickSelect
+        case .video:
+            shouldAnimatedPop = pickerConfig.videoSelectionTapAction != .quickSelect
+        }
+        if shouldAnimatedPop {
+            animator.addCompletion { [weak self] in
+                self?.didSelectItem(
+                    indexPath: indexPath,
+                    animated: false
+                )
+            }
+        } else {
+            didSelectItem(
                 indexPath: indexPath,
                 animated: false
             )

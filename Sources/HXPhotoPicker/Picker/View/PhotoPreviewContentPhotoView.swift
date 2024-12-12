@@ -20,6 +20,7 @@ class PhotoPreviewContentPhotoView: UIView, PhotoPreviewContentViewProtocol {
     var photoAsset: PhotoAsset! { didSet { updateContent() } }
     
     var imageView: ImageView!
+    var imageViewSetImageAnimated = true
     var livePhotoView: PHLivePhotoView!
     var livePhotoPlayType: PhotoPreviewViewController.PlayType = .once
     var isLivePhotoAnimating: Bool = false
@@ -351,13 +352,13 @@ extension PhotoPreviewContentPhotoView {
                     let imageData = try Data(contentsOf: photoEdit.url)
                     imageView.setImageData(imageData)
                 }catch {
-                    imageView.setImage(photoEdit.image, animated: true)
+                    imageView.setImage(photoEdit.image, animated: imageViewSetImageAnimated)
                 }
             }else {
                 if let image = UIImage(contentsOfFile: photoEdit.url.path) {
-                    imageView.setImage(image, animated: true)
+                    imageView.setImage(image, animated: imageViewSetImageAnimated)
                 }else {
-                    imageView.setImage(photoEdit.image, animated: true)
+                    imageView.setImage(photoEdit.image, animated: imageViewSetImageAnimated)
                 }
             }
             requestCompletion = true
@@ -405,7 +406,7 @@ extension PhotoPreviewContentPhotoView {
                 return
             }
             self.requestSucceed()
-            self.imageView.setImage(image, animated: true)
+            self.imageView.setImage(image, animated: imageViewSetImageAnimated)
             self.requestID = nil
             self.requestCompletion = true
         }
@@ -473,7 +474,7 @@ extension PhotoPreviewContentPhotoView {
                         DispatchQueue.main.async {
                             if asset == self.photoAsset {
                                 self.requestSucceed()
-                                self.imageView.setImage(image, animated: true)
+                                self.imageView.setImage(image, animated: self.imageViewSetImageAnimated)
                                 self.requestID = nil
                                 self.requestCompletion = true
                             }

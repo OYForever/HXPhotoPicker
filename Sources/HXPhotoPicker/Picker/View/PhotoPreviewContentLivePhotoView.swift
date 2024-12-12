@@ -76,9 +76,9 @@ extension PhotoPreviewContentLivePhotoView {
         #if HXPICKER_ENABLE_EDITOR
         if let photoEdit = photoAsset.photoEditedResult {
             if let image = UIImage(contentsOfFile: photoEdit.url.path) {
-                imageView.setImage(image, animated: true)
+                imageView.setImage(image, animated: imageViewSetImageAnimated)
             }else {
-                imageView.setImage(photoEdit.image, animated: true)
+                imageView.setImage(photoEdit.image, animated: imageViewSetImageAnimated)
             }
             requestCompletion = true
             return
@@ -124,9 +124,9 @@ extension PhotoPreviewContentLivePhotoView {
         #if HXPICKER_ENABLE_EDITOR
         if let photoEdit = photoAsset.photoEditedResult {
             if let image = UIImage(contentsOfFile: photoEdit.url.path) {
-                imageView.setImage(image, animated: true)
+                imageView.setImage(image, animated: imageViewSetImageAnimated)
             }else {
-                imageView.setImage(photoEdit.image, animated: true)
+                imageView.setImage(photoEdit.image, animated: imageViewSetImageAnimated)
             }
             requestCompletion = true
             return
