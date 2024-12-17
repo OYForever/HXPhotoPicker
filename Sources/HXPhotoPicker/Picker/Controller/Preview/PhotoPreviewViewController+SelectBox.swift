@@ -8,6 +8,50 @@
 import UIKit
 
 extension PhotoPreviewViewController {
+    func deselectPhotoAsset(_ photoAsset: PhotoAsset) {
+        var canUpdate = false
+        var bottomNeedAnimated = false
+        var pickerUpdateCell = false
+        let beforeIsEmpty = pickerController.selectedAssetArray.isEmpty
+        
+        // 取消选中
+        pickerController.pickerData.remove(photoAsset)
+        if !beforeIsEmpty && pickerController.selectedAssetArray.isEmpty {
+            bottomNeedAnimated = true
+        }
+        if isShowToolbar {
+            photoToolbar.removeSelectedAssets([photoAsset])
+            photoToolbar.previewListReload([photoAsset])
+        }
+        #if HXPICKER_ENABLE_EDITOR
+        if photoAsset.videoEditedResult != nil, pickerConfig.isDeselectVideoRemoveEdited {
+            photoAsset.editedResult = nil
+            let cell = getCell(for: currentPreviewIndex)
+            cell?.photoAsset = photoAsset
+            cell?.cancelRequest()
+            cell?.requestPreviewAsset()
+            pickerUpdateCell = true
+        }else  if photoAsset.photoEditedResult != nil, pickerConfig.isDeselectPhotoRemoveEdited {
+            photoAsset.editedResult = nil
+            let cell = getCell(for: currentPreviewIndex)
+            cell?.photoAsset = photoAsset
+            cell?.cancelRequest()
+            cell?.requestPreviewAsset()
+            pickerUpdateCell = true
+        }
+        #endif
+        canUpdate = true
+        
+        if canUpdate {
+            updateSelectBox(
+                photoAsset: photoAsset,
+                isSelected: false,
+                pickerUpdateCell: pickerUpdateCell,
+                bottomNeedAnimated: bottomNeedAnimated
+            )
+        }
+    }
+    
     @objc func didSelectBoxControlClick() {
         guard let photoAsset = photoAsset(for: currentPreviewIndex) else {
             return

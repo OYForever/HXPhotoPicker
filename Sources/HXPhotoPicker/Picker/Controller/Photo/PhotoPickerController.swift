@@ -95,6 +95,18 @@ open class PhotoPickerController: UINavigationController {
         previewViewController?.deleteCurrentPhotoAsset()
     }
     
+    /// 取消选中的Asset
+    public func deselectPhotoAsset(_ asset: PhotoAsset) {
+        if let previewViewController {
+            previewViewController.deselectPhotoAsset(asset)
+        } else if let photoToolbar = pickerViewController?.photoToolbar {
+            pickerViewController?.photoToolbar(photoToolbar, didDeleteAsset: asset)
+        } else {
+            pickerData.remove(asset)
+            pickerViewController?.listView.updateCellSelectedTitle()
+        }
+    }
+    
     /// 预览界面添加本地资源
     /// - Parameter photoAsset: 对应的 PhotoAsset 数据
     public func previewAddedCameraPhotoAsset(_ photoAsset: PhotoAsset) {
