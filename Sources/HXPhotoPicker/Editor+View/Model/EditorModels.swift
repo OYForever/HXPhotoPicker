@@ -406,38 +406,52 @@ public enum EditorStickerItemType {
 }
 
 extension EditorStickerItem {
-    
     func itemFrame(_ maxWidth: CGFloat) -> CGRect {
-        var width = maxWidth - 60
+        // 1. 计算可用宽度
+        let margin: CGFloat = type.isText ? 30 : 60
+        let availableWidth = maxWidth - margin
+        let minSize: CGFloat = availableWidth // 最小尺寸，让图片能铺满
+        
+        // 2. 音频类型特殊处理
         if type.isAudio {
-            let height: CGFloat = 60
-            return CGRect(origin: .zero, size: CGSize(width: width, height: height))
-            
+            return CGRect(origin: .zero, size: CGSize(width: availableWidth, height: 60))
         }
-        if type.isText {
-            width = maxWidth - 30
-        }
+        
+        // 3. 获取图片尺寸
         let imageSize = type.image?.size ?? .init(width: 1, height: 1)
-        let height = width
-        var itemWidth: CGFloat = 0
-        var itemHeight: CGFloat = 0
-        let imageWidth = imageSize.width
-        var imageHeight = imageSize.height
-        if imageWidth > width {
-            imageHeight = width / imageWidth * imageHeight
+        guard imageSize.width > 0, imageSize.height > 0 else {
+            return CGRect(origin: .zero, size: CGSize(width: minSize, height: minSize))
         }
-        if imageHeight > height {
-            itemWidth = height / imageSize.height * imageWidth
-            itemHeight = height
-        }else {
-            if imageWidth > width {
-                itemWidth = width
-            }else {
-                itemWidth = imageWidth
+        
+        // 4. 严格按比例计算
+        let aspectRatio = imageSize.width / imageSize.height
+        var finalSize: CGSize
+        
+        if imageSize.width <= minSize || imageSize.height <= minSize {
+            // 处理小图
+            if aspectRatio >= 1 {
+                finalSize = CGSize(
+                    width: max(imageSize.width, minSize),
+                    height: max(imageSize.width, minSize) / aspectRatio
+                )
+            } else {
+                finalSize = CGSize(
+                    width: max(imageSize.height, minSize) * aspectRatio,
+                    height: max(imageSize.height, minSize)
+                )
             }
-            itemHeight = imageHeight
+        } else if imageSize.width > availableWidth {
+            // 处理大图
+            finalSize = CGSize(
+                width: availableWidth,
+                height: availableWidth / aspectRatio
+            )
+        } else {
+            // 使用原始尺寸
+            finalSize = imageSize
         }
-        return CGRect(x: 0, y: 0, width: itemWidth, height: itemHeight)
+        
+        return CGRect(origin: .zero, size: finalSize)
     }
 }
 
