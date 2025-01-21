@@ -519,28 +519,28 @@ extension PhotoPickerView: UICollectionViewDelegateFlowLayout {
             }
             let collectionWidth = collectionView.width - contentInset.left - contentInset.right
             let itemWidth = (collectionWidth - space * (count - CGFloat(1))) / count
-            return CGSize(width: itemWidth, height: itemWidth)
+            return CGSize(width: itemWidth.rounded(.down), height: itemWidth.rounded(.down))
         }
         let maxHeight = height - contentInset.top - contentInset.bottom
         let minWidth = maxHeight / 16 * 9
         if canAddCamera && canAddLimit {
             if config.sort == .asc {
                 if indexPath.item == assets.count + 1 || indexPath.item == assets.count {
-                    return CGSize(width: minWidth, height: maxHeight)
+                    return CGSize(width: minWidth.rounded(.down), height: maxHeight.rounded(.down))
                 }
             }else {
                 if indexPath.item == 0 || indexPath.item == 1 {
-                    return CGSize(width: minWidth, height: maxHeight)
+                    return CGSize(width: minWidth.rounded(.down), height: maxHeight.rounded(.down))
                 }
             }
         }else if canAddCamera || canAddLimit {
             if config.sort == .asc {
                 if indexPath.item == assets.count {
-                    return CGSize(width: minWidth, height: maxHeight)
+                    return CGSize(width: minWidth.rounded(.down), height: maxHeight.rounded(.down))
                 }
             }else {
                 if indexPath.item == 0 {
-                    return CGSize(width: minWidth, height: maxHeight)
+                    return CGSize(width: minWidth.rounded(.down), height: maxHeight.rounded(.down))
                 }
             }
         }
@@ -556,7 +556,7 @@ extension PhotoPickerView: UICollectionViewDelegateFlowLayout {
             itemWidth = max(itemWidth, minWidth)
             itemWidth = min(itemWidth, maxWidth)
         }
-        return CGSize(width: itemWidth, height: itemHeight)
+        return CGSize(width: itemWidth.rounded(.down), height: itemHeight.rounded(.down))
     }
 }
 
