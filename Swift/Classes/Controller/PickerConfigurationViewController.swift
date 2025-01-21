@@ -29,6 +29,7 @@ class PickerConfigurationViewController: UITableViewController {
             target: self,
             action: #selector(openPickerController)
         )
+        self.config.selectOptions = [.photo, .gifPhoto, .livePhoto, .HDRPhoto]
     }
     
     @objc func openPickerController() {
@@ -402,6 +403,12 @@ extension PickerConfigurationViewController {
             UIAlertAction(title: "photo+gif+livephoto+video", style: .default, handler: { [weak self] (action) in
             guard let self = self else { return }
             self.config.selectOptions = [.gifPhoto, .livePhoto, .video]
+            self.tableView.reloadRows(at: [indexPath], with: .fade)
+        }))
+        alert.addAction(
+            UIAlertAction(title: "photo+gif+livephoto+HDR", style: .default, handler: { [weak self] (action) in
+            guard let self = self else { return }
+            self.config.selectOptions = [.photo, .gifPhoto, .livePhoto, .HDRPhoto]
             self.tableView.reloadRows(at: [indexPath], with: .fade)
         }))
         alert.addAction(UIAlertAction.init(title: "取消", style: .cancel, handler: nil))
@@ -989,6 +996,9 @@ extension PickerAssetOptions {
         }
         if self == [.photo, .video] {
             return "photo+video"
+        }
+        if self == [.photo, .gifPhoto, .livePhoto, .HDRPhoto] {
+            return "photo+gifPhoto+livePhoto+HDRPhoto"
         }
         switch self {
         case .photo:

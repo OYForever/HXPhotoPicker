@@ -48,6 +48,9 @@ class PhotoPreviewContentPhotoView: UIView, PhotoPreviewContentViewProtocol {
     func initViews() {
         imageView = ImageView()
         imageView.size = size
+        if #available(iOS 17, *) {
+            imageView.preferredImageDynamicRange = .high
+        }
         addSubview(imageView)
     }
     
@@ -372,7 +375,7 @@ extension PhotoPreviewContentPhotoView {
                 guard let self = self, self.photoAsset == asset else {
                     return
                 }
-                if inICloud {
+                if inICloud || asset.isHDRAsset {
                     self.requestPreviewImageData()
                 }else {
                     self.requestPreviewImage()
@@ -480,22 +483,26 @@ extension PhotoPreviewContentPhotoView {
                             }
                         }
                     }
-                    let dataCount = CGFloat(dataResult.imageData.count)
-                    if dataCount > 3000000 {
-                        PhotoTools.compressImageData(
-                            dataResult.imageData,
-                            compressionQuality: dataCount.compressionQuality,
-                            queueLabel: "com.hxphotopicker.previewrequest"
-                        ) {
-                            guard let imageData = $0 else {
-                                handler()
-                                return
+                    if asset.isHDRAsset {
+                        handler(UIImage.HDRDecoded(dataResult.imageData))
+                    } else {
+                        let dataCount = CGFloat(dataResult.imageData.count)
+                        if dataCount > 3000000 {
+                            PhotoTools.compressImageData(
+                                dataResult.imageData,
+                                compressionQuality: dataCount.compressionQuality,
+                                queueLabel: "com.hxphotopicker.previewrequest"
+                            ) {
+                                guard let imageData = $0 else {
+                                    handler()
+                                    return
+                                }
+                                handler(.init(data: imageData))
                             }
-                            handler(.init(data: imageData))
+                            return
                         }
-                        return
+                        handler()
                     }
-                    handler()
                 }
             }
         case .failure(let error):
