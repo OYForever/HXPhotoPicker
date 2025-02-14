@@ -33,7 +33,7 @@ extension PhotoManager {
         case .system:
             // 先尝试匹配自定义语言
             for customLanguage in customLanguages {
-                if Locale.preferredLanguages.first(where: { $0.hasPrefix(customLanguage.language) }) != nil {
+                if Bundle.main.preferredLocalizations.first(where: { $0 == customLanguage.language }) != nil {
                     languageBundle = customLanguage.bundle
                     break
                 }
@@ -58,42 +58,6 @@ extension PhotoManager {
     
     /// 获取系统语言标识符
     private var systemLanguageIdentifier: String {
-        if #available(iOS 16, *) {
-            let language = Locale.current.language
-            let languageCode = language.languageCode?.identifier ?? "en"
-            
-            // 处理中文特殊情况
-            if languageCode == "zh" {
-                let script = language.script?.identifier ?? ""
-                return "\(languageCode)-\(script)" // zh-Hans 或 zh-Hant
-            }
-            
-            // 处理巴西葡萄牙语特殊情况
-            if languageCode == "pt" && language.region?.identifier == "BR" {
-                return "pt-BR"
-            }
-            
-            return languageCode
-            
-        } else {
-            // iOS 16 之前的处理方式
-            let languageCode = Locale.current.languageCode ?? "en"
-            
-            // 处理中文特殊情况
-            if languageCode == "zh" {
-                if let script = Locale.current.scriptCode {
-                    return "\(languageCode)-\(script)"
-                }
-                // 通过首选语言列表判断简繁体
-                return Locale.preferredLanguages.first?.contains("Hans") == true ? "zh-Hans" : "zh-Hant"
-            }
-            
-            // 处理巴西葡萄牙语特殊情况
-            if languageCode == "pt" && Locale.current.regionCode == "BR" {
-                return "pt-BR"
-            }
-            
-            return languageCode
-        }
+        return Bundle.main.preferredLocalizations.first ?? "en"
     }
 }

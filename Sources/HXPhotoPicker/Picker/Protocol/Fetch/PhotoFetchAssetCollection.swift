@@ -189,7 +189,7 @@ public extension PhotoFetchAssetCollection {
         }
         let selectOptions = config.selectOptions
         var useLocalIdentifier = false
-        let language = Locale.preferredLanguages.first
+        let language = Bundle.main.preferredLocalizations.first
         if let localOptions = self.cameraAlbumLocalIdentifierSelectOptions,
            let localLanguage = self.cameraAlbumLocalLanguage,
            localLanguage == language,
