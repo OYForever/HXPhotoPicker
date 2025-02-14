@@ -47,15 +47,10 @@ public class PhotoPeekViewController: UIViewController {
         super.viewDidLoad()
         if photoAsset != nil {
             if photoAsset.mediaType == .photo {
-                if photoAsset.mediaSubType == .livePhoto ||
-                    photoAsset.mediaSubType == .localLivePhoto {
-                    let livePhotoView = PhotoPreviewContentLivePhotoView()
-                    livePhotoView.imageViewSetImageAnimated = false
-                    contentView = livePhotoView
-                } else {
-                    let photoView = PhotoPreviewContentPhotoView()
-                    photoView.imageViewSetImageAnimated = false
-                    contentView = photoView
+                if photoAsset.mediaSubType.isLivePhoto {
+                    contentView = PhotoPreviewContentLivePhotoView()
+                }else {
+                    contentView = PhotoPreviewContentPhotoView()
                 }
             }else {
                 contentView = PhotoPreviewContentVideoView()
@@ -112,7 +107,6 @@ public class PhotoPeekViewController: UIViewController {
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if photoAsset != nil {
-            previewImageView.frame = view.bounds
             contentView.frame = view.bounds
             progressView.height = 1
             progressView.y = view.height - progressView.height
@@ -132,20 +126,12 @@ public class PhotoPeekViewController: UIViewController {
 extension PhotoPeekViewController: PhotoPreviewContentViewDelete {
     func contentView(requestSucceed contentView: PhotoPreviewContentViewProtocol) {
         delegate?.photoPeekViewController(requestSucceed: self)
-        if photoAsset.mediaType == .photo {
-            previewImageView.isHidden = true
-        }
     }
     func contentView(requestFailed contentView: PhotoPreviewContentViewProtocol) {
         delegate?.photoPeekViewController(requestFailed: self)
-        previewImageView.isHidden = true
     }
 }
 extension PhotoPeekViewController: PhotoPreviewVideoViewDelegate {
-    func videoView(readyForDisplay videoView: VideoPlayerView) {
-        previewImageView.isHidden = true
-    }
-    
     func videoView(resetPlay videoView: VideoPlayerView) {
         progress = 0
         setupProgressView()

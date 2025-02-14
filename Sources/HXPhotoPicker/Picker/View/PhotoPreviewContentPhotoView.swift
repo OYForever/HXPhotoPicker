@@ -257,11 +257,11 @@ extension PhotoPreviewContentPhotoView {
         if photoAsset.mediaSubType != .networkVideo {
             var key: String = ""
             if let networkImage = photoAsset.networkImageAsset {
-                if let cacheKey = networkImage.thumbnailURL?.cacheKey,
+                if let cacheKey = networkImage.thumbailCacheKey,
                    networkImage.originalLoadMode == .alwaysThumbnail,
                    !loadOriginal {
                     key = cacheKey
-                }else if let cacheKey = networkImage.originalURL?.cacheKey {
+                }else if let cacheKey = networkImage.originalCacheKey {
                     key = cacheKey
                 }
             }else if let livePhoto = photoAsset.localLivePhoto,
@@ -375,7 +375,7 @@ extension PhotoPreviewContentPhotoView {
                 guard let self = self, self.photoAsset == asset else {
                     return
                 }
-                if inICloud || asset.isHDRAsset {
+                if inICloud || asset.mediaSubType.isHDRPhoto {
                     self.requestPreviewImageData()
                 }else {
                     self.requestPreviewImage()
@@ -483,7 +483,7 @@ extension PhotoPreviewContentPhotoView {
                             }
                         }
                     }
-                    if asset.isHDRAsset {
+                    if asset.mediaSubType.isHDRPhoto {
                         handler(UIImage.HDRDecoded(dataResult.imageData))
                     } else {
                         let dataCount = CGFloat(dataResult.imageData.count)

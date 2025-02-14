@@ -6,16 +6,16 @@
 //  Copyright © 2020 Silence. All rights reserved.
 //
 
-import AVFoundation
-import CoreGraphics
-import ImageIO
-import MobileCoreServices
 import UIKit
+import ImageIO
+import CoreGraphics
+import MobileCoreServices
+import AVFoundation
 
 extension UIImage {
     var width: CGFloat { size.width }
     var height: CGFloat { size.height }
-
+    
     static func image(for named: String?) -> UIImage? {
         if named == nil {
             return nil
@@ -34,20 +34,20 @@ extension UIImage {
         }
         return image
     }
-
+    
     static var imageResource: HX.ImageResource {
         HX.ImageResource.shared
     }
-
+    
     func scaleSuitableSize() -> UIImage? {
-        var imageSize = size
+        var imageSize = self.size
         while imageSize.width * imageSize.height > 3 * 1000 * 1000 {
             imageSize.width *= 0.5
             imageSize.height *= 0.5
         }
-        return scaleToFillSize(size: imageSize)
+        return self.scaleToFillSize(size: imageSize)
     }
-
+    
     func scaleToFillSize(size: CGSize, mode: HX.ImageTargetMode = .fill, scale: CGFloat = 0) -> UIImage? {
         if self.size == size {
             return self
@@ -59,7 +59,7 @@ extension UIImage {
             if isEqualRatio {
                 rendererSize = size
                 rect = CGRect(origin: .zero, size: size)
-            } else {
+            }else {
                 let scale = size.width / width
                 var scaleHeight = scale * height
                 var scaleWidth = size.width
@@ -70,11 +70,11 @@ extension UIImage {
                 rendererSize = .init(width: scaleWidth, height: scaleHeight)
                 rect = .init(origin: .zero, size: rendererSize)
             }
-        } else {
+        }else {
             rendererSize = size
             if mode == .fit {
                 rect = CGRect(origin: .zero, size: size)
-            } else {
+            }else {
                 var x: CGFloat = 0
                 var y: CGFloat = 0
                 let scale = size.width / width
@@ -102,12 +102,11 @@ extension UIImage {
         format.opaque = false
         format.scale = scale == 0 ? self.scale : scale
         let renderer = UIGraphicsImageRenderer(size: rendererSize, format: format)
-        let image = renderer.image { _ in
+        let image = renderer.image { context in
             draw(in: rect)
         }
         return image
     }
-
     func scaleImage(toScale: CGFloat) -> UIImage? {
         if toScale == 1 {
             return self
@@ -116,12 +115,11 @@ extension UIImage {
         format.opaque = false
         format.scale = scale
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: width * toScale, height: height * toScale), format: format)
-        let image = renderer.image { _ in
+        let image = renderer.image { context in
             draw(in: CGRect(x: 0, y: 0, width: width * toScale, height: height * toScale))
         }
         return image
     }
-
     static func image(
         for color: UIColor?,
         havingSize: CGSize,
@@ -132,7 +130,7 @@ extension UIImage {
             let rect: CGRect
             if havingSize.equalTo(CGSize.zero) {
                 rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-            } else {
+            }else {
                 rect = CGRect(x: 0, y: 0, width: havingSize.width, height: havingSize.height)
             }
             let format = UIGraphicsImageRendererFormat()
@@ -150,28 +148,26 @@ extension UIImage {
         }
         return nil
     }
-
+    
     func normalizedImage() -> UIImage? {
         if imageOrientation == .up {
             return self
         }
         return repaintImage()
     }
-
     func repaintImage() -> UIImage? {
         let format = UIGraphicsImageRendererFormat()
         format.opaque = false
         format.scale = scale
         let renderer = UIGraphicsImageRenderer(size: size, format: format)
-        let image = renderer.image { _ in
+        let image = renderer.image { context in
             draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         }
         return image
     }
-
     func roundCropping() -> UIImage? {
         let renderer = UIGraphicsImageRenderer(size: size)
-        let newImage = renderer.image { _ in
+        let newImage = renderer.image { context in
             let width = min(size.width, size.height)
             let rect = CGRect(x: (size.width - width) * 0.5, y: (size.height - width) * 0.5, width: width, height: width)
             let path = UIBezierPath(ovalIn: rect)
@@ -180,7 +176,6 @@ extension UIImage {
         }
         return newImage
     }
-
     func cropImage(toRect cropRect: CGRect, viewWidth: CGFloat, viewHeight: CGFloat) -> UIImage? {
         if cropRect.isEmpty {
             return self
@@ -206,7 +201,7 @@ extension UIImage {
         let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
         return croppedImage
     }
-
+    
     func rotation(to orientation: UIImage.Orientation) -> UIImage? {
         if let cgImage = cgImage {
             func swapWidthAndHeight(_ toRect: CGRect) -> CGRect {
@@ -273,7 +268,6 @@ extension UIImage {
         }
         return nil
     }
-
     func rotation(angle: Int, isHorizontal: Bool) -> UIImage? {
         switch angle {
         case 0, 360, -360:
@@ -283,19 +277,19 @@ extension UIImage {
         case 90, -270:
             if !isHorizontal {
                 return rotation(to: .right)
-            } else {
+            }else {
                 return rotation(to: .rightMirrored)
             }
         case 180, -180:
             if !isHorizontal {
                 return rotation(to: .down)
-            } else {
+            }else {
                 return rotation(to: .downMirrored)
             }
         case 270, -90:
             if !isHorizontal {
                 return rotation(to: .left)
-            } else {
+            }else {
                 return rotation(to: .leftMirrored)
             }
         default:
@@ -303,7 +297,7 @@ extension UIImage {
         }
         return self
     }
-
+    
     /// 创建一个新的 UIImage，具有指定的方向
     /// - Parameter orientation: 新的方向
     /// - Returns: 具有新方向的 UIImage
@@ -333,27 +327,41 @@ extension UIImage {
             }
         }
     }
-
-    func merge(_ image: UIImage, origin: CGPoint, scale: CGFloat = UIScreen._scale) -> UIImage? {
+    
+    func merge(_ image: UIImage, origin: CGPoint, opaque: Bool = false, isJPEG: Bool = false, scale: CGFloat = UIScreen._scale) -> UIImage? {
         let format = UIGraphicsImageRendererFormat()
-        format.opaque = false
+        format.opaque = opaque
         format.scale = scale
         let renderer = UIGraphicsImageRenderer(size: size, format: format)
-        let mergeImage = renderer.image { _ in
+        let mergeImage = renderer.image { context in
             image.draw(in: CGRect(origin: origin, size: size))
         }
         return mergeImage
     }
-
-    func merge(images: [UIImage], scale: CGFloat = UIScreen._scale) -> UIImage? {
+    func merge(
+        images: [UIImage],
+        opaque: Bool = false,
+        isJPEG: Bool = false,
+        compressionQuality: CGFloat = 1,
+        scale: CGFloat = UIScreen._scale
+    ) -> UIImage? {
         if images.isEmpty {
             return self
         }
         let format = UIGraphicsImageRendererFormat()
-        format.opaque = false
+        format.opaque = opaque
         format.scale = scale
         let renderer = UIGraphicsImageRenderer(size: size, format: format)
-        let mergeImage = renderer.image { _ in
+        if isJPEG {
+            let data = renderer.jpegData(withCompressionQuality: compressionQuality) { context in
+                draw(in: CGRect(origin: .zero, size: size))
+                for image in images {
+                    image.draw(in: CGRect(origin: .zero, size: size))
+                }
+            }
+            return .init(data: data)
+        }
+        let mergeImage = renderer.image { context in
             draw(in: CGRect(origin: .zero, size: size))
             for image in images {
                 image.draw(in: CGRect(origin: .zero, size: size))
@@ -361,7 +369,7 @@ extension UIImage {
         }
         return mergeImage
     }
-
+    
     static func merge(images: [UIImage], scale: CGFloat? = nil) -> UIImage? {
         if images.isEmpty {
             return nil
@@ -372,12 +380,12 @@ extension UIImage {
         var _scale: CGFloat = 1
         if let scale = scale {
             _scale = scale
-        } else {
+        }else {
             if !Thread.isMainThread {
                 DispatchQueue.main.sync {
                     _scale = UIScreen._scale
                 }
-            } else {
+            }else {
                 _scale = UIScreen._scale
             }
         }
@@ -385,14 +393,13 @@ extension UIImage {
         format.opaque = false
         format.scale = _scale
         let renderer = UIGraphicsImageRenderer(size: images.first!.size, format: format)
-        let mergeImage = renderer.image { _ in
+        let mergeImage = renderer.image { context in
             for image in images {
                 image.draw(in: CGRect(origin: .zero, size: image.size))
             }
         }
         return mergeImage
     }
-
     static func gradualShadowImage(_ havingSize: CGSize) -> UIImage? {
         let layer = PhotoTools.getGradientShadowLayer(true)
         layer.frame = CGRect(origin: .zero, size: havingSize)
@@ -428,9 +435,33 @@ extension UIImage {
             return nil
         }
         
-        let imageOrientation = AssetManager.transformImageOrientation(orientation: exifOrientation)
-        let image = UIImage(cgImage: imageRef, scale: 1.0, orientation: imageOrientation)
+        let image = UIImage(cgImage: imageRef, scale: 1.0, orientation: exifOrientation.imageOrientation)
         return image
     }
     
+}
+
+extension CGImagePropertyOrientation {
+    var imageOrientation: UIImage.Orientation {
+        switch self {
+        case .up:
+            return .up
+        case .upMirrored:
+            return .upMirrored
+        case .down:
+            return .down
+        case .downMirrored:
+            return .downMirrored
+        case .left:
+            return .left
+        case .leftMirrored:
+            return .leftMirrored
+        case .right:
+            return .right
+        case .rightMirrored:
+            return .rightMirrored
+        default:
+            return .up
+        }
+    }
 }

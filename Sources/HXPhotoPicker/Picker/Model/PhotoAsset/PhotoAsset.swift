@@ -106,7 +106,6 @@ open class PhotoAsset: Equatable {
     public var isGifAsset: Bool { mediaSubType.isGif }
     public var isLocalAsset: Bool { mediaSubType.isLocal }
     public var isNetworkAsset: Bool { mediaSubType.isNetwork }
-    public var isHDRAsset: Bool { mediaSubType.isHDRPhoto }
     
     /// 根据系统相册里对应的 PHAsset 数据初始化
     /// - Parameter asset: 系统相册里对应的 PHAsset 数据
@@ -146,6 +145,10 @@ open class PhotoAsset: Equatable {
         }else {
             mediaSubType = .localImage
         }
+    }
+    
+    public convenience init(image: UIImage) {
+        self.init(localImageAsset: .init(image: image))
     }
     
     public convenience init(_ localImageAsset: LocalImageAsset) {
