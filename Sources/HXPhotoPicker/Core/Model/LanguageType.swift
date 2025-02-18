@@ -36,6 +36,14 @@ public enum LanguageType: Equatable, CustomStringConvertible {
     case arabic
     /// 葡萄牙语（巴西）
     case portuguese_brazil
+    /// 西班牙语（墨西哥）
+    case spanish_Mexico
+    /// 土耳其语
+    case turkish
+    /// 波兰语
+    case polish
+    /// 意大利语
+    case italian
     /// 自定义
     case custom(Bundle)
     
@@ -56,6 +64,10 @@ public enum LanguageType: Equatable, CustomStringConvertible {
         case "fr": self = .french
         case "ar": self = .arabic
         case "pt-br": self = .portuguese_brazil
+        case "es-mx": self = .spanish_Mexico
+        case "tr": self = .turkish
+        case "pl": self = .polish
+        case "it": self = .italian
         default: self = .system
         }
     }
@@ -77,6 +89,10 @@ public enum LanguageType: Equatable, CustomStringConvertible {
         case .french: return "fr"
         case .arabic: return "ar"
         case .portuguese_brazil: return "pt-BR"
+        case .spanish_Mexico: return "es-MX"
+        case .turkish: return "tr"
+        case .polish: return "pl"
+        case .italian: return "it"
         case .custom(let bundle): return bundle.bundleIdentifier ?? "custom"
         }
     }

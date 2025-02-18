@@ -336,7 +336,11 @@ extension PickerConfigurationViewController {
             "german",
             "french",
             "arabic",
-            "portuguese (brazil)"
+            "portuguese (brazil)",
+            "spanish (mexico)",
+            "turkish",
+            "polish",
+            "italian"
         ]
         for title in titles {
             alert.addAction(UIAlertAction.init(title: title, style: .default, handler: { [weak self] (action) in
@@ -975,6 +979,14 @@ extension LanguageType {
             return "阿拉伯"
         case .portuguese_brazil:
             return "葡萄牙语（巴西）"
+        case .spanish_Mexico:
+            return "西班牙语（墨西哥）"
+        case .turkish:
+            return "土耳其语"
+        case .polish:
+            return "波兰语"
+        case .italian:
+            return "意大利语"
         case .custom:
             return "自定义"
         }
@@ -1125,6 +1137,14 @@ extension LanguageType {
             return .arabic
         case 13:
             return .portuguese_brazil
+        case 14:
+            return .spanish_Mexico
+        case 15:
+            return .turkish
+        case 16:
+            return .polish
+        case 17:
+            return .italian
         default:
             return .system
         }
