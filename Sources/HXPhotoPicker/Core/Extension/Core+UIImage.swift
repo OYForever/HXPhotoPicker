@@ -298,12 +298,10 @@ extension UIImage {
         return self
     }
     
-    /// 创建一个新的 UIImage，具有指定的方向
+    /// 创建一个新的 UIImage，具有指定的方向，可避免图片格式异常问题
     /// - Parameter orientation: 新的方向
     /// - Returns: 具有新方向的 UIImage
     func withOrientation(_ orientation: UIImage.Orientation) -> UIImage? {
-        guard orientation != imageOrientation else { return self }
-        
         return UIGraphicsImageRenderer(size: size).image { context in
             switch orientation {
             case .up:
