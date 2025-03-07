@@ -215,16 +215,18 @@ extension PhotoPickerView {
                 item += offsetIndex
             }
         }
-        collectionView.scrollToItem(
-            at: IndexPath(
-                item: item,
-                section: 0
-            ),
-            at: scrollDirection == .vertical ? .centeredVertically : .centeredHorizontally,
-            animated: false
-        )
-        DispatchQueue.main.async {
-            self.scrollViewDidScroll(self.collectionView)
+        if !collectionView.visibleCells.isEmpty {
+            collectionView.scrollToItem(
+                at: IndexPath(
+                    item: item,
+                    section: 0
+                ),
+                at: scrollDirection == .vertical ? .centeredVertically : .centeredHorizontally,
+                animated: false
+            )
+            DispatchQueue.main.async {
+                self.scrollViewDidScroll(self.collectionView)
+            }
         }
     }
     func getCell(
