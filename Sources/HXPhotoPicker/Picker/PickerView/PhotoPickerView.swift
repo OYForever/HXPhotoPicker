@@ -92,6 +92,8 @@ open class PhotoPickerView: UIView {
     ) {
         self.manager = manager
         self.scrollDirection = scrollDirection
+        PhotoManager.shared.appearanceStyle = manager.config.appearanceStyle
+        PhotoManager.shared.createLanguageBundle(languageType: manager.config.languageType)
         isMultipleSelect = manager.config.selectMode == .multiple
         if manager.config.selectMode == .multiple &&
             !manager.config.allowSelectedTogether &&
@@ -236,16 +238,17 @@ open class PhotoPickerView: UIView {
     
     func setupOther() {
         emptyView.width = collectionView.width
-        emptyView.centerY = collectionView.height * 0.5
+        emptyView.layoutSubviews()
+        emptyView.centerY = collectionView.height * 0.5 - contentInset.top
         if scrollDirection == .horizontal && config.allowAddCamera {
             let cameraWidth = (height - contentInset.top - contentInset.bottom) / 16 * 9
             let contentWidth = width - contentInset.left - contentInset.right
             emptyView.centerX = cameraWidth + (contentWidth - cameraWidth) * 0.5
-        }else {
-            emptyView.centerX = collectionView.width * 0.5
+        } else {
+            emptyView.x = -contentInset.left
         }
         if AssetPermissionsUtil.authorizationStatus == .denied {
-            deniedView.frame = bounds
+            deniedView.frame = CGRect(x: -contentInset.left, y: -contentInset.top, width: bounds.width, height: bounds.height)
         }
     }
     required public init?(coder: NSCoder) {
