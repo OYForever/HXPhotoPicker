@@ -65,7 +65,7 @@ extension PhotoPickerView {
             )
             #endif
         }
-        if config.allowAddLimit && AssetPermissionsUtil.isLimitedAuthorizationStatus {
+        if config.allowAddLimit {
             collectionView.register(
                 PhotoPickerLimitCell.self,
                 forCellWithReuseIdentifier:
