@@ -47,6 +47,7 @@ public class PhotoPickerLimitCell: UICollectionViewCell {
         titleLb.text = config.title?.localized
         let isDark = PhotoManager.isDark
         backgroundColor = isDark ? config.backgroundDarkColor : config.backgroundColor
+        cornersRound(radius: config.cornerRadius, corner: .allCorners)
         lineLayer.strokeColor = isDark ? config.lineDarkColor.cgColor : config.lineColor.cgColor
         lineLayer.lineWidth = config.lineWidth
         titleLb.textColor = isDark ? config.titleDarkColor : config.titleColor

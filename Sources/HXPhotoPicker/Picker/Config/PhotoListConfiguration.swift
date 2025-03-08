@@ -302,6 +302,9 @@ extension PhotoListConfiguration {
         /// 暗黑模式下的背景颜色
         public var backgroundDarkColor: UIColor? = "#404040".hx.color
         
+        /// 圆角
+        public var cornerRadius: CGFloat = 0
+        
         /// 加号颜色
         public var lineColor: UIColor = "#999999".hx.color
         
