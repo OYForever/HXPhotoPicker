@@ -404,13 +404,21 @@ fileprivate extension EditorVideoTool {
                 textLayer.position = scaleCenter
                 mirrorLayer.addSublayer(textLayer)
                 textLayer.transform = CATransform3DMakeScale(info.scale, info.scale, 1)
-            } else if let image = info.image?.withOrientation(.up) {
+            } else if let image = info.image {
                 let scaleSize = CGSize(
                     width: mirrorSize.width * info.scale,
                     height: mirrorSize.height * info.scale
                 )
+                let imageToUse: UIImage?
+                if image.isPDFImage {
+                    let tempImageView = UIImageView(image: image)
+                    tempImageView.size = scaleSize
+                    imageToUse = tempImageView.convertedToImage()
+                } else {
+                    imageToUse = image.withOrientation(.up)
+                }
                 let imageLayer = animationLayer(
-                    image: image,
+                    image: imageToUse ?? image,
                     beginTime: beginTime,
                     videoDuration: videoDuration
                 )

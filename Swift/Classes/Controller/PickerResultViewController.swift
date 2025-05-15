@@ -955,7 +955,7 @@ extension PickerResultViewController: PhotoPickerControllerDelegate {
                 )
                 list.append(chartlet)
             }
-            list.append(.init(image: UIImage(named: "smiling-face-with-sunglasses")))
+            list.append(.init(image: UIImage(named: "smiling-face-with-sunglasses"), ext: "pdf"))
             return list
         }else {
             return gifChartlet()

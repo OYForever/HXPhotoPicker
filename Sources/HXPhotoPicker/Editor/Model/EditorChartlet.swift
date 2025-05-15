@@ -32,6 +32,9 @@ public struct EditorChartlet {
         self.image = image
         self.imageData = imageData
         self.ext = ext
+        if let ext = ext as? String, ext.lowercased() == "pdf" {
+            self.image?.isPDFImage = true
+        }
         #if canImport(Kingfisher)
         url = nil
         #endif

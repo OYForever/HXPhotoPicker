@@ -12,6 +12,8 @@ import CoreGraphics
 import MobileCoreServices
 import AVFoundation
 
+private var pdfKey: Void?
+
 extension UIImage {
     var width: CGFloat { size.width }
     var height: CGFloat { size.height }
@@ -37,6 +39,15 @@ extension UIImage {
     
     static var imageResource: HX.ImageResource {
         HX.ImageResource.shared
+    }
+    
+    var isPDFImage: Bool {
+        get {
+            return objc_getAssociatedObject(self, &pdfKey) as? Bool ?? false
+        }
+        set {
+            objc_setAssociatedObject(self, &pdfKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
     }
     
     func scaleSuitableSize() -> UIImage? {
