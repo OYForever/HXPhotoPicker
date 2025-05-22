@@ -230,6 +230,13 @@ extension PickerManager {
                     if !self.selectOptions.isPhoto {
                         return
                     }
+                    if selectOptions == [.gifPhoto] && !photoAsset.mediaSubType.isGif {
+                        return
+                    } else if selectOptions == [.livePhoto] && !photoAsset.mediaSubType.isLivePhoto {
+                        return
+                    } else if selectOptions == [.HDRPhoto] && !photoAsset.mediaSubType.isHDRPhoto {
+                        return
+                    }
                 case .video:
                     if !self.selectOptions.isVideo {
                         return
