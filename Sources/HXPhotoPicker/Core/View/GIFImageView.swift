@@ -50,8 +50,8 @@ class GIFImage {
     fileprivate static func getCGImageSourceGifFrameDelay(imageSource: CGImageSource, index: Int) -> TimeInterval {
         var delay = 0.0
         guard let imgProperties: NSDictionary = CGImageSourceCopyPropertiesAtIndex(
-                imageSource,
-                index, nil
+            imageSource,
+            index, nil
         ) else { return delay }
         // 获取该帧图片的属性字典
         if let property = imgProperties[kCGImagePropertyGIFDictionary as String] as? NSDictionary {
@@ -66,24 +66,45 @@ class GIFImage {
         return delay
     }
 
+    /// 获取图片数据源的第 index 帧图片的方向
+    fileprivate static func getCGImageSourceOrientation(_ imageSource: CGImageSource, index: Int) -> UIImage.Orientation {
+        guard index >= 0, index < CGImageSourceGetCount(imageSource) else {
+            print("Invalid frame index: \(index)")
+            return .up
+        }
+
+        guard let imgProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, index, nil) as? [CFString: Any],
+              let orientation = imgProperties[kCGImagePropertyOrientation] as? UInt32 else {
+            return CGImagePropertyOrientation.up.imageOrientation
+        }
+
+        return CGImagePropertyOrientation(rawValue: orientation)?.imageOrientation ?? .up
+    }
+
     /// 根据图片数据源初始化，设置动画总时长、总帧数等属性
     fileprivate func initGIFSource(cgImageSource: CGImageSource) {
         let numOfFrames = CGImageSourceGetCount(cgImageSource)
         frameTotalCount = numOfFrames
-        for index in 0..<numOfFrames {
+        for index in 0 ..< numOfFrames {
             // 获取每一帧的动画时长
             let frameDuration = GIFImage.getCGImageSourceGifFrameDelay(imageSource: cgImageSource, index: index)
-            self.frameDurations[index] = max(GlobalSetting.minFrameDuration, frameDuration)
-            self.totalDuration += frameDuration
+            frameDurations[index] = max(GlobalSetting.minFrameDuration, frameDuration)
+            totalDuration += frameDuration
             // 一开始初始化预加载一定数量的图片，而不是全部图片
             if index < GlobalSetting.prefetchNumber {
-                if let cgimage = CGImageSourceCreateImageAtIndex(cgImageSource, index, nil) {
-                    let image: UIImage = UIImage(cgImage: cgimage)
-                    if index == 0 {
-                        self.image = image
-                    }
-                    self.frameImages[index] = image
+                guard let cgimage = CGImageSourceCreateImageAtIndex(cgImageSource, index, nil) else {
+                    print("Failed to create CGImage for frame \(index)")
+                    continue
                 }
+
+                // 获取并应用图片方向
+                let orientation = GIFImage.getCGImageSourceOrientation(cgImageSource, index: index)
+                let image = UIImage(cgImage: cgimage, scale: 1.0, orientation: orientation)
+
+                if index == 0 {
+                    self.image = image
+                }
+                frameImages[index] = image
             }
         }
     }
@@ -93,24 +114,24 @@ class GIFImage {
         guard index < frameTotalCount else { return nil }
         // 取当前帧图片
         let currentImage: UIImage?
-        if let image = self.frameImages[index] {
+        if let image = frameImages[index] {
             currentImage = image
-        }else {
-            currentImage = self.image
+        } else {
+            currentImage = image
         }
         // 如果总帧数大于预加载数，需要加载后面未加载的帧图片
         if frameTotalCount > GlobalSetting.prefetchNumber {
             // 清除当前帧图片缓存数据，空出内存
             if index != 0 {
-                self.frameImages[index] = nil
+                frameImages[index] = nil
             }
             // 加载后面帧图片到内存
-            for i in 1...GlobalSetting.prefetchNumber {
+            for i in 1 ... GlobalSetting.prefetchNumber {
                 let idx = (i + index) % frameTotalCount
-                if self.frameImages[idx] == nil {
+                if frameImages[idx] == nil {
                     // 默认加载第一张帧图片为占位，防止多次加载
-                    self.frameImages[idx] = self.frameImages[0]
-                    self.readFrameQueue.async { [weak self] in
+                    frameImages[idx] = frameImages[0]
+                    readFrameQueue.async { [weak self] in
                         guard let strongSelf = self, let cgImageSource = strongSelf.cgImageSource else { return }
                         guard let cgImage = CGImageSourceCreateImageAtIndex(cgImageSource, idx, nil) else { return }
                         strongSelf.frameImages[idx] = UIImage(cgImage: cgImage)
@@ -121,6 +142,7 @@ class GIFImage {
         return currentImage
     }
 }
+
 class GIFImageView: UIImageView {
     /// 累加器，用于计算一个定时循环中的可用动画时间
     fileprivate var accumulator: TimeInterval = 0.0
@@ -138,9 +160,11 @@ class GIFImageView: UIImageView {
         super.init(coder: aDecoder)
         setupDisplayLink()
     }
+
     init() {
         super.init(frame: CGRect.zero)
     }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -173,7 +197,6 @@ class GIFImageView: UIImageView {
             }
             self.layer.setNeedsDisplay()
         }
-
     }
 
     /// 当显示 GIF 时，不处理高亮状态
@@ -199,8 +222,8 @@ class GIFImageView: UIImageView {
 
     /// 开启定时器
     override func startAnimating() {
-        if self.animatedImage != nil && self.displayLink != nil {
-            self.displayLink!.isPaused = false
+        if animatedImage != nil && displayLink != nil {
+            displayLink!.isPaused = false
         } else {
             super.startAnimating()
         }
@@ -208,8 +231,8 @@ class GIFImageView: UIImageView {
 
     /// 暂停定时器
     override func stopAnimating() {
-        if self.animatedImage != nil && self.displayLink != nil {
-            self.displayLink!.isPaused = true
+        if animatedImage != nil && displayLink != nil {
+            displayLink!.isPaused = true
         } else {
             super.stopAnimating()
         }
@@ -218,8 +241,8 @@ class GIFImageView: UIImageView {
     /// 当前显示内容为 GIF 当前帧图片
     override func display(_ layer: CALayer) {
         super.display(layer)
-        if self.animatedImage != nil {
-            if let frame = self.currentFrame {
+        if animatedImage != nil {
+            if let frame = currentFrame {
                 layer.contents = frame.cgImage
             }
         }
@@ -229,8 +252,8 @@ class GIFImageView: UIImageView {
     func setupDisplayLink() {
         displayLink?.invalidate()
         displayLink = CADisplayLink(target: self, selector: #selector(GIFImageView.changeKeyFrame))
-        self.displayLink!.add(to: RunLoop.main, forMode: RunLoop.Mode.common)
-        self.displayLink!.isPaused = true
+        displayLink!.add(to: RunLoop.main, forMode: RunLoop.Mode.common)
+        displayLink!.isPaused = true
     }
 
     /// 动态改变图片动画帧
@@ -239,41 +262,41 @@ class GIFImageView: UIImageView {
             displayLink?.invalidate()
             gifImage = nil
             return
-        }else if let view = superview,
-                 let photoClass = NSClassFromString("PhotoPreviewContentView"),
-                 view.isKind(of: photoClass) {
+        } else if let view = superview,
+                  let photoClass = NSClassFromString("PhotoPreviewContentView"),
+                  view.isKind(of: photoClass) {
             displayLink?.invalidate()
             gifImage = nil
             return
         }
-        if let animatedImage = self.animatedImage {
+        if let animatedImage = animatedImage {
             guard let displayLink = displayLink,
-                  self.currentFrameIndex < animatedImage.frameTotalCount else {
+                  currentFrameIndex < animatedImage.frameTotalCount else {
                 return
             }
-            self.accumulator += min(1.0, displayLink.duration)
+            accumulator += min(1.0, displayLink.duration)
             var frameDuration: TimeInterval
-            if let duration = animatedImage.frameDurations[self.currentFrameIndex] {
+            if let duration = animatedImage.frameDurations[currentFrameIndex] {
                 frameDuration = duration
-            }else {
+            } else {
                 frameDuration = displayLink.duration
             }
-            while self.accumulator >= frameDuration {
-                self.accumulator -= frameDuration
-                self.currentFrameIndex += 1
-                if self.currentFrameIndex >= animatedImage.frameTotalCount {
-                    self.currentFrameIndex = 0
+            while accumulator >= frameDuration {
+                accumulator -= frameDuration
+                currentFrameIndex += 1
+                if currentFrameIndex >= animatedImage.frameTotalCount {
+                    currentFrameIndex = 0
                 }
-                if let currentImage = animatedImage.getFrame(index: self.currentFrameIndex) {
-                    self.currentFrame = currentImage
+                if let currentImage = animatedImage.getFrame(index: currentFrameIndex) {
+                    currentFrame = currentImage
                 }
-                self.layer.setNeedsDisplay()
-                if let newFrameDuration = animatedImage.frameDurations[self.currentFrameIndex] {
+                layer.setNeedsDisplay()
+                if let newFrameDuration = animatedImage.frameDurations[currentFrameIndex] {
                     frameDuration = min(displayLink.duration, newFrameDuration)
                 }
             }
         } else {
-            self.stopAnimating()
+            stopAnimating()
         }
     }
 }
