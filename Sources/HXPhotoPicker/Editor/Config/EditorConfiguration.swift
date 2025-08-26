@@ -577,13 +577,16 @@ public extension EditorConfiguration {
             }
             
             /// 编辑工具
-            public enum `Type` {
+            public enum `Type`: Equatable {
                 
                 /// video - 播放、时长裁剪
                 case time
                 
                 /// 涂鸦
                 case graffiti
+                
+                /// 照片贴图
+                case photoChartlet
                 
                 /// 贴图
                 case chartlet
@@ -605,6 +608,9 @@ public extension EditorConfiguration {
                 
                 /// 尺寸裁剪
                 case cropSize
+                
+                /// 自定义工具
+                case custom(toolId: String, hasSelectedStatus: Bool = false)
             }
         }
         
@@ -617,6 +623,12 @@ public extension EditorConfiguration {
                 imageType: .imageResource.editor.tools.graffiti,
                 type: .graffiti
             )
+            #if HXPICKER_ENABLE_PICKER
+            let photoChartlet = Options(
+                imageType: .imageResource.editor.tools.photoChartlet,
+                type: .photoChartlet
+            )
+            #endif
             let chartlet = Options(
                 imageType: .imageResource.editor.tools.chartlet,
                 type: .chartlet
@@ -645,7 +657,7 @@ public extension EditorConfiguration {
                 imageType: .imageResource.editor.tools.filter,
                 type: .filter
             )
-            return .init(toolOptions: [time, graffiti, chartlet, text, music, cropSize, mosaic, filterEdit, filter])
+            return .init(toolOptions: [time, graffiti, photoChartlet, chartlet, text, music, cropSize, mosaic, filterEdit, filter])
         }
     }
     

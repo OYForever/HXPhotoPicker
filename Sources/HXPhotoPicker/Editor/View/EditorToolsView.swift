@@ -42,14 +42,14 @@ class EditorToolsView: UIView {
         for option in config.toolOptions {
             if contentType == .image {
                 switch option.type {
-                case .graffiti, .chartlet, .text, .cropSize, .filter, .filterEdit, .mosaic:
+                case .graffiti, .photoChartlet, .chartlet, .text, .cropSize, .filter, .filterEdit, .mosaic, .custom:
                     options.append(option)
                 default:
                     break
                 }
             }else if contentType == .video {
                 switch option.type {
-                case .time, .music, .graffiti, .chartlet, .text, .cropSize, .filter, .filterEdit:
+                case .time, .music, .graffiti, .photoChartlet, .chartlet, .text, .cropSize, .filter, .filterEdit, .custom:
                     options.append(option)
                 default:
                     break
@@ -224,7 +224,7 @@ extension EditorToolsView: EditorToolViewCellDelegate {
     func didClick(at indexPath: IndexPath) {
         let option = options[indexPath.item]
         switch option.type {
-        case .cropSize, .text, .music, .chartlet:
+        case .cropSize, .text, .music, .photoChartlet, .chartlet, .custom(_, false):
             break
         default:
             if #available(iOS 13.0, *), option.type == .graffiti {

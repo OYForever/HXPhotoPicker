@@ -212,6 +212,8 @@ public extension HX.ImageResource {
             public var cropSize: ImageType = .local("hx_editor_photo_crop")
             /// 文本
             public var text: ImageType = .local("hx_editor_photo_tools_text")
+            /// 照片贴图
+            public var photoChartlet: ImageType = .system("photo.circle.fill")
             /// 贴图
             public var chartlet: ImageType = .local("hx_editor_photo_tools_emoji")
             /// 马赛克-涂抹

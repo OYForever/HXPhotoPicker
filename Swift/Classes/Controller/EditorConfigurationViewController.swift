@@ -46,6 +46,7 @@ class EditorConfigurationViewController: UITableViewController {
                             ofType: "jpeg"
                         )!
                     )!
+                    config.toolsView.toolOptions.insert(.init(imageType: .system("photo.circle.fill"), type: .custom(toolId: "哈啊哈哈")), at: 0)
                     let vc = EditorViewController(.init(type: .image(image), result: editedResult), config: config)
                     vc.delegate = self
                     present(vc, animated: true, completion: nil)
@@ -289,6 +290,20 @@ extension EditorConfigurationViewController: EditorViewControllerDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             completionHandler(Tools.musicInfos, false)
         }
+    }
+    
+    func editorViewController(
+        _ editorViewController: EditorViewController,
+        didSelectToolViewCustomItemAt toolId: String
+    ) {
+        print(toolId)
+    }
+    
+    func editorViewController(
+        _ editorViewController: EditorViewController,
+        deselectToolViewCustomItemAt toolId: String
+    ) {
+        print(toolId)
     }
     
     func getChartletTitles() -> [EditorChartlet] {

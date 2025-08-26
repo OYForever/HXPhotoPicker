@@ -114,6 +114,17 @@ public protocol EditorViewControllerDelegate: AnyObject {
         completionHandler: @escaping ([VideoEditorMusicInfo], Bool) -> Void
     )
     
+    
+    func editorViewController(
+        _ editorViewController: EditorViewController,
+        didSelectToolViewCustomItemAt toolId: String
+    )
+    
+    func editorViewController(
+        _ editorViewController: EditorViewController,
+        deselectToolViewCustomItemAt toolId: String
+    )
+    
     /*
     /// 完成编辑
     /// - Parameters:
@@ -259,6 +270,16 @@ public extension EditorViewControllerDelegate {
     ) {
         completionHandler([], false)
     }
+    
+    func editorViewController(
+        _ editorViewController: EditorViewController,
+        didSelectToolViewCustomItemAt toolId: String
+    ) { }
+    
+    func editorViewController(
+        _ editorViewController: EditorViewController,
+        deselectToolViewCustomItemAt toolId: String
+    ) { }
     
     func editorViewController(
         _ editorViewController: EditorViewController,

@@ -32,6 +32,9 @@ extension EditorViewController: EditorToolsViewDelegate {
         case .text:
             presentText()
             return
+        case .photoChartlet:
+            presentPhotoPicker()
+            return
         case .chartlet:
             let vc = config.chartlet.listProtcol.init(config: config, editorType: selectedAsset.contentType)
             if let vc = vc as? EditorChartletViewController {
@@ -40,6 +43,9 @@ extension EditorViewController: EditorToolsViewDelegate {
             vc.modalPresentationStyle = config.chartlet.modalPresentationStyle
             vc.delegate = self
             present(vc, animated: true)
+            return
+        case .custom(let toolId, false):
+            delegate?.editorViewController(self, didSelectToolViewCustomItemAt: toolId)
             return
         default:
             selectedTool = model
@@ -79,6 +85,8 @@ extension EditorViewController: EditorToolsViewDelegate {
             showVideoControlView()
         case .filterEdit:
             showFilterEditView()
+        case .custom(let toolId, true):
+            delegate?.editorViewController(self, didSelectToolViewCustomItemAt: toolId)
         default:
             break
         }
@@ -102,6 +110,8 @@ extension EditorViewController: EditorToolsViewDelegate {
             hideFiltersView()
         case .filterEdit:
             hideFilterEditView()
+        case .custom(let toolId, _):
+            delegate?.editorViewController(self, deselectToolViewCustomItemAt: toolId)
         default:
             break
         }
@@ -698,6 +708,53 @@ extension EditorViewController: EditorToolsViewDelegate {
         let nav = EditorStickerTextController(rootViewController: textVC)
         nav.modalPresentationStyle = config.text.modalPresentationStyle
         present(nav, animated: true, completion: nil)
+    }
+    
+    func presentPhotoPicker() {
+        func handleImageData(_ data: Data) {
+            if let tool = lastSelectedTool {
+                switch tool.type {
+                case .graffiti, .mosaic:
+                    toolsView.deselected()
+                    editorView.isMosaicEnabled = false
+                    editorView.isDrawEnabled = false
+                    hideBrushColorView()
+                    hideMosaicToolView()
+                    lastSelectedTool = nil
+                default:
+                    break
+                }
+            }
+            if let tool = selectedTool,
+               tool.type == .graffiti || tool.type == .mosaic {
+                selectedTool = nil
+                updateBottomMaskLayer()
+            }
+            editorView.addSticker(data)
+            checkSelectedTool()
+            checkFinishButtonState()
+        }
+        #if HXPICKER_ENABLE_PICKER
+        var wxConfig = PhotoTools.getWXPickerConfig()
+        wxConfig.languageType = config.languageType
+        wxConfig.selectMode = .single
+        wxConfig.selectOptions = [.photo];
+        wxConfig.isSelectedOriginal = true
+        wxConfig.previewView.isShowBottomView = true
+        wxConfig.previewView.bottomView.isHiddenEditButton = true
+        hx.present(
+            picker: wxConfig
+        ) { result, _ in
+            result.photoAssets.first?.requestImageData { _, result in
+                switch result {
+                case .success(let imageData):
+                    handleImageData(imageData.imageData)
+                default:
+                    break
+                }
+            }
+        }
+        #endif
     }
 }
 
