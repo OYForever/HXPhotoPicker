@@ -615,49 +615,60 @@ public extension EditorConfiguration {
         }
         
         public static var `default`: ToolsView {
+            var options: [Options] = []
             let time = Options(
                 imageType: .imageResource.editor.tools.video,
                 type: .time
             )
+            options.append(time)
             let graffiti = Options(
                 imageType: .imageResource.editor.tools.graffiti,
                 type: .graffiti
             )
+            options.append(graffiti)
             #if HXPICKER_ENABLE_PICKER
             let photoChartlet = Options(
                 imageType: .imageResource.editor.tools.photoChartlet,
                 type: .photoChartlet
             )
+            options.append(photoChartlet)
             #endif
             let chartlet = Options(
                 imageType: .imageResource.editor.tools.chartlet,
                 type: .chartlet
             )
+            options.append(chartlet)
             let text = Options(
                 imageType: .imageResource.editor.tools.text,
                 type: .text
             )
-            let cropSize = Options(
-                imageType: .imageResource.editor.tools.cropSize,
-                type: .cropSize
-            )
+            options.append(text)
             let music = Options(
                 imageType:.imageResource.editor.tools.music,
                 type: .music
             )
+            options.append(music)
+            let cropSize = Options(
+                imageType: .imageResource.editor.tools.cropSize,
+                type: .cropSize
+            )
+            options.append(cropSize)
             let mosaic = Options(
                 imageType: .imageResource.editor.tools.mosaic,
                 type: .mosaic
             )
+            options.append(mosaic)
             let filterEdit = Options(
                 imageType: .imageResource.editor.tools.adjustment,
                 type: .filterEdit
             )
+            options.append(filterEdit)
             let filter = Options(
                 imageType: .imageResource.editor.tools.filter,
                 type: .filter
             )
-            return .init(toolOptions: [time, graffiti, photoChartlet, chartlet, text, music, cropSize, mosaic, filterEdit, filter])
+            options.append(filter)
+            return .init(toolOptions: options)
         }
     }
     
