@@ -32,6 +32,7 @@ public class PhotoPickerViewController: PhotoBaseViewController {
     var isFirstLayout: Bool = true
     var appropriatePlaceAsset: PhotoAsset?
     var navigationBarHeight: CGFloat?
+    var isFetchPhotoAssets: Bool = false
     weak var finishItem: PhotoNavigationItem?
     
     public override func viewDidLoad() {
@@ -157,13 +158,13 @@ public class PhotoPickerViewController: PhotoBaseViewController {
             listView.contentInset = UIEdgeInsets(
                 top: collectionTop,
                 left: 0,
-                bottom: config.customBottomInset ?? bottomInset,
+                bottom: bottomInset,
                 right: 0
             )
             listView.scrollIndicatorInsets = UIEdgeInsets(
                 top: 0,
                 left: 0,
-                bottom: config.customBottomInset ?? bottomIndicatorInset,
+                bottom: bottomIndicatorInset,
                 right: 0
             )
         }else {
@@ -175,7 +176,7 @@ public class PhotoPickerViewController: PhotoBaseViewController {
             listView.contentInset = UIEdgeInsets(
                 top: collectionTop,
                 left: 0,
-                bottom: config.customBottomInset ?? promptHeight,
+                bottom: promptHeight,
                 right: 0
             )
         }
@@ -292,7 +293,7 @@ extension PhotoPickerViewController {
         navigationItem.rightBarButtonItems = rightItems
     }
     
-    @objc 
+    @objc
     func didCancelItemClick() {
         pickerController.cancelCallback()
     }
