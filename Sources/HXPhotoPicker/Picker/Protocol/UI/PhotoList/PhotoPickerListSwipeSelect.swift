@@ -235,7 +235,7 @@ public extension PhotoPickerListSwipeSelect {
                 return
             }
         }
-        let photoAsset = getAsset(for: index)
+        let photoAsset = getCell(for: index)?.photoAsset ?? getAsset(for: index)
         if photoAsset.mediaType == .video &&
             pickerController.pickerData.videoDurationExceedsTheLimit(photoAsset) {
             return
@@ -316,8 +316,8 @@ public extension PhotoPickerListSwipeSelect {
             return
         }
         var showHUD = false
-        let photoAsset = getAsset(for: item)
         let cell = getCell(for: item)
+        let photoAsset = cell?.photoAsset ?? getAsset(for: item)
         if photoAsset.isSelected != isSelected {
             if isSelected {
                 func addAsset(showTip: Bool) {
@@ -349,6 +349,7 @@ public extension PhotoPickerListSwipeSelect {
                 }else {
                     let inICloud = photoAsset.checkICloundStatus(
                         allowSyncPhoto: pickerController.config.allowSyncICloudWhenSelectPhoto,
+                        hudAddedTo: view,
                         completion: { _, isSuccess in
                         if isSuccess {
                             addAsset(showTip: true)
