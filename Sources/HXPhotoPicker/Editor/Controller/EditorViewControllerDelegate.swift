@@ -177,24 +177,11 @@ public extension EditorViewControllerDelegate {
     func editorViewController(
         _ editorViewController: EditorViewController,
         didFinish asset: EditorAsset
-    ) {
-        back(editorViewController)
-    }
-    
-    /*
-    func editorViewController(
-        _ editorViewController: EditorViewController,
-        didFinish results: [EditedResult]
-    ) {
-        back(editorViewController)
-    }
-     */
+    ) { }
     
     func editorViewController(
         didCancel editorViewController: EditorViewController
-    ) {
-        back(editorViewController)
-    }
+    ) { }
     
     func editorViewcOntroller(
         _ editorViewController: EditorViewController,
@@ -305,18 +292,5 @@ public extension EditorViewControllerDelegate {
     func editorViewController(
         transitioEndPreviewFrame editorViewController: EditorViewController
     ) -> CGRect? { nil }
-    
-    private func back(
-        _ editorViewController: EditorViewController
-    ) {
-        if !editorViewController.config.isAutoBack {
-            if let navigationController = editorViewController.navigationController,
-               navigationController.viewControllers.count > 1 {
-                navigationController.popViewController(animated: true)
-            }else {
-                editorViewController.dismiss(animated: true)
-            }
-        }
-    }
 }
  
