@@ -8,7 +8,8 @@
 import UIKit
 
 extension EditorViewController: EditorRatioToolViewDelegate {
-    func ratioToolView(_ ratioToolView: EditorRatioToolView, didSelectedRatioAt ratio: CGSize) {
+    func ratioToolView(_ ratioToolView: EditorRatioToolView, didSelectedRatioAt index: Int, ratio: CGSize) {
+        config.cropSize.currentSeletedIndexCallback?(index)
         if ratio.width < 0 || ratio.height < 0 {
             editorView.isFixedRatio = true
             let ratio = editorView.originalAspectRatio

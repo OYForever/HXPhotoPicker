@@ -315,6 +315,8 @@ public extension EditorConfiguration {
         /// cropSize.isResetToOriginal = true
         /// ```
         public var defaultSeletedIndex: Int = 1
+        /// 比例选中下标回调
+        public var currentSeletedIndexCallback: ((Int) -> Void)?
         
         /// aspect ratio configuration
         /// 宽高比配置

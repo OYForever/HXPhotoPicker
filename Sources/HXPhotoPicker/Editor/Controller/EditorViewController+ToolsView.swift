@@ -75,7 +75,7 @@ extension EditorViewController: EditorToolsViewDelegate {
                     return
                 }
                 if let ratio = self.ratioToolView.selectedRatio?.ratio, !ratio.equalTo(.zero), !self.editorView.isRoundMask {
-                    self.ratioToolView(self.ratioToolView, didSelectedRatioAt: ratio)
+                    self.ratioToolView(self.ratioToolView, didSelectedRatioAt: self.ratioToolView.selectedIndex, ratio: ratio)
                 }
             }
             showCropSizeToolsView()

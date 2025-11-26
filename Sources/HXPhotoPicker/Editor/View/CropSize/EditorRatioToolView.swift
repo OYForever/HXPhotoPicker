@@ -8,7 +8,7 @@
 import UIKit
 
 protocol EditorRatioToolViewDelegate: AnyObject {
-    func ratioToolView(_ ratioToolView: EditorRatioToolView, didSelectedRatioAt ratio: CGSize)
+    func ratioToolView(_ ratioToolView: EditorRatioToolView, didSelectedRatioAt index: Int, ratio: CGSize)
 }
 
 class EditorRatioToolView: UIView {
@@ -172,7 +172,7 @@ extension EditorRatioToolView: UICollectionViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let ratio = ratios[indexPath.item]
         selectedIndex = indexPath.item
-        delegate?.ratioToolView(self, didSelectedRatioAt: ratio.ratio)
+        delegate?.ratioToolView(self, didSelectedRatioAt: selectedIndex, ratio: ratio.ratio)
         if UIDevice.isPortrait {
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         }else {

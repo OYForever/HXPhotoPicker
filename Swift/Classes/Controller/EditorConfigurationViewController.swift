@@ -46,6 +46,9 @@ class EditorConfigurationViewController: UITableViewController {
                             ofType: "jpeg"
                         )!
                     )!
+                    config.cropSize.currentSeletedIndexCallback = {
+                        print($0)
+                    }
                     config.toolsView.toolOptions.insert(.init(imageType: .system("photo.circle.fill"), type: .custom(toolId: "哈啊哈哈")), at: 0)
                     let vc = EditorViewController(.init(type: .image(image), result: editedResult), config: config)
                     vc.delegate = self
