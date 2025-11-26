@@ -394,7 +394,7 @@ open class EditorViewController: HXBaseViewController {
                     }else {
                         top = 30
                     }
-                    bottom = bottomMargin + 55 + 140
+                    bottom = bottomMargin + 55 + 170
                 }else {
                     let navHeight: CGFloat
                     if let barHeight = self.navigationController?.navigationBar.height {
@@ -418,9 +418,9 @@ open class EditorViewController: HXBaseViewController {
                         top = navHeight + 15
                     }
                     if UIDevice.isPad {
-                        bottom = bottomMargin + 160
+                        bottom = bottomMargin + 190
                     }else {
-                        bottom = bottomMargin + 140
+                        bottom = bottomMargin + 170
                     }
                 }
                 let left = UIDevice.isPad ? 30 : UIDevice.leftMargin + 15
@@ -840,7 +840,7 @@ open class EditorViewController: HXBaseViewController {
                 height: buttonHeight + bottomMargin
             )
             if !config.cropSize.aspectRatios.isEmpty {
-                ratioToolView.frame = .init(x: 0, y: toolsView.y - 40, width: view.width, height: 40)
+                ratioToolView.frame = .init(x: 0, y: toolsView.y - 70, width: view.width, height: 70)
                 rotateScaleView.frame = .init(x: 0, y: ratioToolView.y - 45, width: view.width, height: 45)
             }else {
                 rotateScaleView.frame = .init(x: 0, y: toolsView.y - 45, width: view.width, height: 45)
@@ -850,14 +850,14 @@ open class EditorViewController: HXBaseViewController {
             let ratioToolHeight: CGFloat
             #if targetEnvironment(macCatalyst)
             toolsHeight = 55
-            ratioToolHeight = 50
+            ratioToolHeight = 80
             #else
             if UIDevice.isPad {
                 toolsHeight = 55
-                ratioToolHeight = 50
+                ratioToolHeight = 80
             }else {
                 toolsHeight = buttonHeight
-                ratioToolHeight = 40
+                ratioToolHeight = 70
             }
             #endif
             var bottomMargin = UIDevice.bottomMargin
@@ -1132,6 +1132,8 @@ open class EditorViewController: HXBaseViewController {
                     layerHeight = UIDevice.bottomMargin + 130
                 case .music:
                     layerHeight = UIDevice.bottomMargin + 55
+                case .cropSize:
+                    layerHeight = UIDevice.bottomMargin + 210
                 default:
                     layerHeight = UIDevice.bottomMargin + 180
                 }

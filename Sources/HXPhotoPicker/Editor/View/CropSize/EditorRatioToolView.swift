@@ -209,9 +209,12 @@ extension EditorRatioToolView: UICollectionViewDelegate, UICollectionViewDelegat
     ) -> CGSize {
         if UIDevice.isPortrait {
             let config = ratios[indexPath.item]
-            let itemWidth = config.title.text.width(ofFont: .systemFont(ofSize: UIDevice.isPad ? 16 : 14), maxHeight: .max) + 12
+            var itemWidth = config.title.text.width(ofFont: .systemFont(ofSize: UIDevice.isPad ? 16 : 14), maxHeight: .max) + 12
+            if itemWidth < 50 {
+                itemWidth = 50
+            }
             return .init(width: itemWidth, height: collectionView.height)
         }
-        return .init(width: collectionView.width, height: 25)
+        return .init(width: collectionView.width, height: ratios[indexPath.item].imageType == nil ? 25 : 70)
     }
 }

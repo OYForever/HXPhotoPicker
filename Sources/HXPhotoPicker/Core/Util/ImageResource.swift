@@ -34,7 +34,7 @@ public extension HX {
 
 public extension HX.ImageResource {
     
-    enum ImageType {
+    enum ImageType: Codable {
         case local(String)
         /// iOS 13.0+
         case system(String)
@@ -59,10 +59,6 @@ public extension HX.ImageResource {
             case .system(let name):
                 return name
             }
-        }
-        
-        static var imageResource: HX.ImageResource {
-            HX.ImageResource.shared
         }
     }
     

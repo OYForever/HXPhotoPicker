@@ -319,15 +319,40 @@ public extension EditorConfiguration {
         /// aspect ratio configuration
         /// 宽高比配置
         public var aspectRatios: [EditorRatioToolConfig] = [
-            .init(title: .localized("原始比例"), ratio: .init(width: -1, height: -1)),
-            .init(title: .localized("自由格式"), ratio: .zero),
-            .init(title: .localized("正方形"), ratio: .init(width: 1, height: 1)),
-            .init(title: .custom("16:9"), ratio: .init(width: 16, height: 9)),
-            .init(title: .custom("5:4"), ratio: .init(width: 5, height: 4)),
-            .init(title: .custom("7:5"), ratio: .init(width: 7, height: 5)),
-            .init(title: .custom("4:3"), ratio: .init(width: 4, height: 3)),
-            .init(title: .custom("5:3"), ratio: .init(width: 5, height: 3)),
-            .init(title: .custom("3:2"), ratio: .init(width: 3, height: 2))
+            .init(title: .localized("原始比例"), imageType: .local("hx_editor_crop_scale_original"), ratio: .init(width: -1, height: -1)),
+            .init(title: .localized("自由格式"), imageType: .local("hx_editor_crop_scale_freeform"), ratio: .zero),
+            .init(title: .localized("正方形"), imageType: .local("hx_editor_crop_scale_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("16:9"), imageType: .local("hx_editor_crop_scale_16_9"), ratio: .init(width: 16, height: 9)),
+            .init(title: .custom("5:4"), imageType: .local("hx_editor_crop_scale_5_4"), ratio: .init(width: 5, height: 4)),
+            .init(title: .custom("7:5"), imageType: .local("hx_editor_crop_scale_7_5"), ratio: .init(width: 7, height: 5)),
+            .init(title: .custom("4:3"), imageType: .local("hx_editor_crop_scale_4_3"), ratio: .init(width: 4, height: 3)),
+            .init(title: .custom("9:16"), imageType: .local("hx_editor_crop_scale_9_16"), ratio: .init(width: 9, height: 16)),
+            .init(title: .custom("5:3"), imageType: .local("hx_editor_crop_scale_5_3"), ratio: .init(width: 5, height: 3)),
+            .init(title: .custom("3:2"), imageType: .local("hx_editor_crop_scale_3_2"), ratio: .init(width: 3, height: 2)),
+            .init(title: .custom("3:4"), imageType: .local("hx_editor_crop_scale_3_4"), ratio: .init(width: 3, height: 4)),
+            .init(title: .custom("Instagram"), imageType: .local("hx_editor_crop_scale_instagram_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("Instagram"), imageType: .local("hx_editor_crop_scale_instagram_4_5"), ratio: .init(width: 4, height: 5)),
+            .init(title: .custom("Instagram"), imageType: .local("hx_editor_crop_scale_instagram_9_16"), ratio: .init(width: 9, height: 16)),
+            .init(title: .custom("Facebook"), imageType: .local("hx_editor_crop_scale_fb_1.91_1"), ratio: .init(width: 1.91, height: 1)),
+            .init(title: .custom("Facebook"), imageType: .local("hx_editor_crop_scale_fb_16_9"), ratio: .init(width: 16, height: 9)),
+            .init(title: .custom("Facebook"), imageType: .local("hx_editor_crop_scale_fb_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("TikTok"), imageType: .local("hx_editor_crop_scale_tiktok_9_16"), ratio: .init(width: 9, height: 16)),
+            .init(title: .custom("TikTok"), imageType: .local("hx_editor_crop_scale_tiktok_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("YouTube"), imageType: .local("hx_editor_crop_scale_youtube_16_9"), ratio: .init(width: 16, height: 9)),
+            .init(title: .custom("X"), imageType: .local("hx_editor_crop_scale_x_16_9"), ratio: .init(width: 16, height: 9)),
+            .init(title: .custom("X"), imageType: .local("hx_editor_crop_scale_x_3_1"), ratio: .init(width: 3, height: 1)),
+            .init(title: .custom("LinkedIn"), imageType: .local("hx_editor_crop_scale_linkedin_1.19_1"), ratio: .init(width: 1.91, height: 1)),
+            .init(title: .custom("LinkedIn"), imageType: .local("hx_editor_crop_scale_linkedin_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("Pinterest"), imageType: .local("hx_editor_crop_scale_pinterest_2_3"), ratio: .init(width: 2, height: 3)),
+            .init(title: .custom("Shopify"), imageType: .local("hx_editor_crop_scale_shopify_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("Shopify"), imageType: .local("hx_editor_crop_scale_shopify_1.1_1"), ratio: .init(width: 1.1, height: 1)),
+            .init(title: .custom("Shopify"), imageType: .local("hx_editor_crop_scale_shopify_4_5"), ratio: .init(width: 4, height: 5)),
+            .init(title: .custom("Amazon"), imageType: .local("hx_editor_crop_scale_amazon_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("Shopee"), imageType: .local("hx_editor_crop_scale_shopee_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("ebay"), imageType: .local("hx_editor_crop_scale_ebay_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("Etsy"), imageType: .local("hx_editor_crop_scale_etsy_5_4"), ratio: .init(width: 5, height: 4)),
+            .init(title: .custom("Depop"), imageType: .local("hx_editor_crop_scale_depop_1_1"), ratio: .init(width: 1, height: 1)),
+            .init(title: .custom("Poshmark"), imageType: .local("hx_editor_crop_scale_poshmark_1_1"), ratio: .init(width: 1, height: 1)),
         ]
         
         /// When the default fixed ratio, click restore to reset to the original aspect ratio
@@ -617,54 +642,54 @@ public extension EditorConfiguration {
         public static var `default`: ToolsView {
             var options: [Options] = []
             let time = Options(
-                imageType: .imageResource.editor.tools.video,
+                imageType: HX.imageResource.editor.tools.video,
                 type: .time
             )
             options.append(time)
             let graffiti = Options(
-                imageType: .imageResource.editor.tools.graffiti,
+                imageType: HX.imageResource.editor.tools.graffiti,
                 type: .graffiti
             )
             options.append(graffiti)
             #if HXPICKER_ENABLE_PICKER
             let photoChartlet = Options(
-                imageType: .imageResource.editor.tools.photoChartlet,
+                imageType: HX.imageResource.editor.tools.photoChartlet,
                 type: .photoChartlet
             )
             options.append(photoChartlet)
             #endif
             let chartlet = Options(
-                imageType: .imageResource.editor.tools.chartlet,
+                imageType: HX.imageResource.editor.tools.chartlet,
                 type: .chartlet
             )
             options.append(chartlet)
             let text = Options(
-                imageType: .imageResource.editor.tools.text,
+                imageType: HX.imageResource.editor.tools.text,
                 type: .text
             )
             options.append(text)
             let music = Options(
-                imageType:.imageResource.editor.tools.music,
+                imageType: HX.imageResource.editor.tools.music,
                 type: .music
             )
             options.append(music)
             let cropSize = Options(
-                imageType: .imageResource.editor.tools.cropSize,
+                imageType: HX.imageResource.editor.tools.cropSize,
                 type: .cropSize
             )
             options.append(cropSize)
             let mosaic = Options(
-                imageType: .imageResource.editor.tools.mosaic,
+                imageType: HX.imageResource.editor.tools.mosaic,
                 type: .mosaic
             )
             options.append(mosaic)
             let filterEdit = Options(
-                imageType: .imageResource.editor.tools.adjustment,
+                imageType: HX.imageResource.editor.tools.adjustment,
                 type: .filterEdit
             )
             options.append(filterEdit)
             let filter = Options(
-                imageType: .imageResource.editor.tools.filter,
+                imageType: HX.imageResource.editor.tools.filter,
                 type: .filter
             )
             options.append(filter)

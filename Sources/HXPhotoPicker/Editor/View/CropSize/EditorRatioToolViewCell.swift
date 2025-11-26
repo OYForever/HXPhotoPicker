@@ -11,6 +11,7 @@ class EditorRatioToolViewCell: UICollectionViewCell {
     
     private var bgEffectView: UIVisualEffectView!
     private var bgView: UIView!
+    private var iconIV: UIImageView!
     private var titleLb: UILabel!
     
     private let bgHeight: CGFloat = UIDevice.isPad ? 25 : 22
@@ -23,6 +24,8 @@ class EditorRatioToolViewCell: UICollectionViewCell {
             }
             titleLb.text = config.title.text
             titleLb.textColor = config.titleNormalColor.color
+            iconIV.image = config.imageType?.image?.withRenderingMode(.alwaysTemplate)
+            iconIV.tintColor = titleLb.textColor
             bgView.backgroundColor = config.backgroundNormalColor.color
         }
     }
@@ -55,6 +58,8 @@ class EditorRatioToolViewCell: UICollectionViewCell {
         titleLb.adjustsFontSizeToFitWidth = true
         bgView.addSubview(titleLb)
         contentView.addSubview(bgView)
+        iconIV = UIImageView()
+        contentView.addSubview(iconIV)
     }
     
     func updateSelectState(_ isSelected: Bool) {
@@ -68,6 +73,7 @@ class EditorRatioToolViewCell: UICollectionViewCell {
         }
         bgView.backgroundColor = isSelected ? config.backgroundSelectedColor.color : config.backgroundNormalColor.color
         titleLb.textColor = isSelected ? config.titleSelectedColor.color : config.titleNormalColor.color
+        iconIV.tintColor = titleLb.textColor
     }
     
     override func layoutSubviews() {
@@ -76,7 +82,7 @@ class EditorRatioToolViewCell: UICollectionViewCell {
             bgView.x = 0
             bgView.size = .init(width: width, height: bgHeight)
             bgView.centerY = height * 0.5
-        }else {
+        } else {
             if let config = config, let font = titleLb.font {
                 bgView.y = 0
                 let titleWidth = config.title.text.width(ofFont: font, maxHeight: .max) + 12
@@ -86,9 +92,14 @@ class EditorRatioToolViewCell: UICollectionViewCell {
         }
         titleLb.frame = bgView.bounds
         bgEffectView.frame = bgView.frame
-        guard #available(iOS 11.0, *) else {
-            bgView.cornersRound(radius: bgHeight / 2, corner: .allCorners)
-            return
+        if iconIV.image != nil {
+            iconIV.frame = .init(x: (width - 26) / 2, y: 10, width: 26, height: 26)
+            bgView.frame = .init(x: 0, y: 5, width: width, height: height - 10)
+            titleLb.height = bgHeight
+            titleLb.y = bgView.height - titleLb.height - 5
+            titleLb.centerX = bgView.width / 2
+            bgView.cornersRound(radius: iconIV.image != nil ? 6 : (bgHeight / 2), corner: .allCorners)
+            bgEffectView.layer.cornerRadius = 6
         }
     }
     

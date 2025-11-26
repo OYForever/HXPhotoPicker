@@ -280,7 +280,7 @@ extension PhotoPreviewViewController {
         if pickerConfig.isMultipleSelect || previewType != .browser {
             if previewType != .browser {
                 if previewType == .picker {
-                    let imageType: HX.ImageResource.ImageType = pickerController.config.photoList.previewStyle == .present ? .imageResource.picker.preview.back : .imageResource.picker.preview.cancel
+                    let imageType: HX.ImageResource.ImageType = pickerController.config.photoList.previewStyle == .present ? HX.imageResource.picker.preview.back : HX.imageResource.picker.preview.cancel
                     let cancelItem = UIBarButtonItem(
                         image: imageType.image,
                         style: .done,

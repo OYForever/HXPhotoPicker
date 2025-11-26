@@ -7,8 +7,9 @@
 
 import UIKit
  
-public struct EditorRatioToolConfig {
+public struct EditorRatioToolConfig: Codable {
     public let title: HX.TextManager.TextType
+    public let imageType: HX.ImageResource.ImageType?
     let titleNormalColor: String
     let titleSelectedColor: String
     let backgroundNormalColor: String
@@ -17,6 +18,7 @@ public struct EditorRatioToolConfig {
     
     public init(
         title: HX.TextManager.TextType,
+        imageType: HX.ImageResource.ImageType? = nil,
         titleNormalColor: String = "#a1a1a1",
         titleSelectedColor: String = "#ebebeb",
         backgroundNormalColor: String = "",
@@ -24,6 +26,7 @@ public struct EditorRatioToolConfig {
         ratio: CGSize
     ) {
         self.title = title
+        self.imageType = imageType
         self.titleNormalColor = titleNormalColor
         self.titleSelectedColor = titleSelectedColor
         self.backgroundNormalColor = backgroundNormalColor
